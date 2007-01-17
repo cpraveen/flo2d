@@ -136,6 +136,7 @@ c     Find bounding box
       write(*,'(10x, "ymin =", f8.3)') ymin
       write(*,'(10x, "ymax =", f8.3)') ymax
 
+      nip = 0
       nsp = 0
       nfp = 0
       nop = 0
@@ -151,14 +152,18 @@ c     Find bounding box
          elseif(ptype(ip) .eq. outflow)then
             nop       = nop + 1
             opts(nop) = ip
-         elseif(ptype(ip) .ne. interior)then
-            nbp       = nbp + 1
-            bpts(nbp) = ip
+         elseif(ptype(ip) .eq. interior)then
+            nip       = nip + 1
          else
             print*,'FATAL error in read_grid'
             print*,'Unknown point type for point number =',ip
             print*,'Point type =',ptype(ip)
             stop
+         endif
+
+         if(ptype(ip) .ne. interior)then
+            nbp       = nbp + 1
+            bpts(nbp) = ip
          endif
       enddo
 
@@ -166,6 +171,7 @@ c     Find bounding box
       write(*,'(" Number of farfield points =", i8)') nfp
       write(*,'(" Number of outflow  points =", i8)') nop
       write(*,'(" Number of boundary points =", i8)') nbp
+      write(*,'(" Number of interior points =", i8)') nip
 
       if( nsp+nfp+nop .ne. nbp )then
          print*,'There seem to be some unrecognized point types'
