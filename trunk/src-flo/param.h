@@ -73,8 +73,8 @@ C Size of connectivity list; required by mayavi
       integer inviscid, laminar, turbulent
       parameter(inviscid=1, laminar=2, turbulent=3)
 
-      integer xvstatus
-      common/xv/xvstatus
+      integer xvstatus, display
+      common/xv/xvstatus, display
 
       double precision minelarea, maxelarea, mincvarea, maxcvarea
       double precision minflen, maxflen

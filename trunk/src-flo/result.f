@@ -81,7 +81,7 @@ C------------------------------------------------------------------------------
       write(*,*)
       call flush(6)
 
-C Write pressure coefficient
+C     Write pressure coefficient
       open(unit=10, file='WALL.DAT')
       do i=nsw1,nsw2
          is = edge(1,i)
@@ -96,7 +96,7 @@ C Write pressure coefficient
       enddo
       close(10)
 
-c iso-pressure/mach/visc for gnuplot
+c     iso-pressure/mach/visc for gnuplot
       open(22,file='FLO.P',status='unknown')
       open(23,file='FLO.M',status='unknown')
       rewind(22)
@@ -128,7 +128,7 @@ c iso-pressure/mach/visc for gnuplot
       close(22)
       close(23)
 
-cc velocity vector for gnuplot
+cc    velocity vector for gnuplot
       ifile  = 26
       open(ifile,file='FLO.VECT',status='unknown')
       rewind(ifile)
@@ -144,10 +144,11 @@ cc velocity vector for gnuplot
       enddo
       close(ifile)
 
-c Run gnuplot and Start xv if not already started
+c     Run gnuplot and Start xv if not already started
       if(xvstatus .eq. no .and. iterlast .eq. 0)then
          call system('gnuplot flo.gnu')
-         call system('xv -poll flo.png &')
+         if(display.eq.1) call system('xv -poll flo.png &')
+         if(display.eq.2) call system('display -update 10 flo.png &')
          xvstatus = yes
       else
          call system('gnuplot flo.gnu &')
@@ -215,7 +216,7 @@ C------------------------------------------------------------------------------
       end
 
 C------------------------------------------------------------------------------
-C.....Result in VTK format for MayaVi
+C.....Result in VTK format for MayaVi/ParaView
 C------------------------------------------------------------------------------
       subroutine mayavi(coord, elem, prim)
       implicit none
