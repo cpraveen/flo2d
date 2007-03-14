@@ -43,6 +43,7 @@ ALL:  $(TARGETS)
 
 flo:  ${flo}
 		${FC} -o flo ${flo}
+		@echo "==> Built ${TOLIMIT} version of flo"
 
 ##############################################################################
 # transformation rules

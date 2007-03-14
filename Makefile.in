@@ -13,8 +13,9 @@
 # Else define it first
 #TAPENADE_HOME=
 
-#To use or not: LIMIT or NOLIMIT
-TOLIMIT = UNLIMITED
+#To use or not: LIMITED or UNLIMITED
+#TOLIMIT = UNLIMITED
+TOLIMIT = LIMITED
 
 ###############################################################################
 #Don't change anything below unless you really know what you are doing

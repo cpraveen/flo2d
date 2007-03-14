@@ -3,17 +3,19 @@ FlowType  1
 Mach      0.40
 AOA       0.00
 Reynolds  100.0
-CFL       0.8
-Explicit  1
+CFL       1000.0
+Explicit  0
 LastIter  0
-MaxIter   100
+MaxIter   1000
 MinRes    1.0e-6
 SaveInt   100
 NoIso     30
-Flux      3
+Flux      2
 Limiter   0
 FarBC     1  0.25  0.0
+Display   1
 GridFile  "/home/praveen/fvm/heat/run/naca2415.4420.tri"
+
 GridFile  "../grd/naca3.struct"
 GridFile  "../grd/naca.4738"
 GridFile  "../../grd/rae.7883"

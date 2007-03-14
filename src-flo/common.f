@@ -77,6 +77,7 @@ C-----------------------------------------------------------------------------
       read(inp,*)sdummy, iflux
       read(inp,*)sdummy, ILIMIT
       read(inp,*)sdummy, vortex, xref, yref
+      read(inp,*)sdummy, display
       read(inp,*)sdummy, gridfile
       close(inp)
 
