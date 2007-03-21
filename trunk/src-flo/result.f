@@ -300,3 +300,21 @@ C------------------------------------------------------------------------------
 
       return
       end
+
+c------------------------------------------------------------------------------
+c     Write some solution values: Used for optimization
+c------------------------------------------------------------------------------
+      subroutine write_sol(iter, residue, cl, cd)
+      implicit none
+      integer          iter
+      double precision residue, cl, cd
+
+      integer          fid
+
+      fid = 20
+      open(fid, file="FLO.OUT")
+      write(fid,*) iter, residue, cl, cd
+      close(fid)
+
+      return
+      end
