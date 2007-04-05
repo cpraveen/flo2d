@@ -19,6 +19,7 @@ C.....Kinetic split fluxes
       ct   = ct/lent
       st   = st/lent
 
+#if defined SECONDORDER
       do i=1,4
          dl    = qcl(i) - qvl(i)
          dr    = qvr(i) - qcr(i)
@@ -30,14 +31,32 @@ C     Left state
       ul = qcl(2) + 0.5d0*li(2)
       vl = qcl(3) + 0.5d0*li(3)
       pl = qcl(4) + 0.5d0*li(4)
-      ql2= ul**2 + vl**2
-      el = pl/GAMMA1 + 0.5d0*rl*ql2
 
 C     Right state
       rr = qcr(1) - 0.5d0*li(1)
       ur = qcr(2) - 0.5d0*li(2)
       vr = qcr(3) - 0.5d0*li(3)
       pr = qcr(4) - 0.5d0*li(4)
+#elif defined FIRSTORDER
+C     Left state
+      rl = qcl(1)
+      ul = qcl(2)
+      vl = qcl(3)
+      pl = qcl(4)
+
+C     Right state
+      rr = qcr(1)
+      ur = qcr(2)
+      vr = qcr(3)
+      pr = qcr(4)
+#else
+      print*,'kfvs_flux: fatal error, left/right state not defined'
+      stop
+#endif
+
+      ql2= ul**2 + vl**2
+      el = pl/GAMMA1 + 0.5d0*rl*ql2
+
       qr2= ur**2 + vr**2
       er = pr/GAMMA1 + 0.5d0*rr*qr2
 

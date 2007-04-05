@@ -23,6 +23,7 @@ c Roe flux function
       ct = ct/lent
       st = st/lent
 
+#if defined SECONDORDER
       do i=1,4
          dl    = qcl(i) - qvl(i)
          dr    = qvr(i) - qcr(i)
@@ -34,15 +35,34 @@ C     Left state
       ul = qcl(2) + 0.5d0*li(2)
       vl = qcl(3) + 0.5d0*li(3)
       pl = qcl(4) + 0.5d0*li(4)
-      ql2= ul**2 + vl**2
-      al2= GAMMA*pl/rl
-      hl = al2/GAMMA1 + 0.5d0*ql2
 
 C     Right state
       rr = qcr(1) - 0.5d0*li(1)
       ur = qcr(2) - 0.5d0*li(2)
       vr = qcr(3) - 0.5d0*li(3)
       pr = qcr(4) - 0.5d0*li(4)
+
+#elif defined FIRSTORDER
+C     Left state
+      rl = qcl(1)
+      ul = qcl(2)
+      vl = qcl(3)
+      pl = qcl(4)
+
+C     Right state
+      rr = qcr(1)
+      ur = qcr(2)
+      vr = qcr(3)
+      pr = qcr(4)
+#else
+      print*,'roe_flux: fatal error, left/right state not defined'
+      stop
+#endif
+
+      ql2= ul**2 + vl**2
+      al2= GAMMA*pl/rl
+      hl = al2/GAMMA1 + 0.5d0*ql2
+
       qr2= ur**2 + vr**2
       ar2= GAMMA*pr/rr
       hr = ar2/GAMMA1 + 0.5d0*qr2
