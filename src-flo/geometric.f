@@ -51,7 +51,7 @@ c     Element surrounding element
 c     Smooth the grid using Laplacian smoothing
 c     call smooth(ptype, psup1, psup2, elem, esup1, esup2, coord)
       
-      if(explicit .eq. no)then
+      if(timemode .ne. 1)then
          call renumber(elem, esue, edneigh, esubp)
       endif
 

@@ -68,7 +68,7 @@ C-----------------------------------------------------------------------------
       read(inp,*)sdummy, aoa_deg
       read(inp,*)sdummy, Rey
       read(inp,*)sdummy, cfl
-      read(inp,*)sdummy, explicit
+      read(inp,*)sdummy, timemode
       read(inp,*)sdummy, iterlast
       read(inp,*)sdummy, maxiter
       read(inp,*)sdummy, minres
@@ -176,7 +176,12 @@ C     Runge-Kutta time stepping
       birk(2) = 1.0d0/4.0d0
       birk(3) = 2.0d0/3.0d0
 
-      if(explicit .eq. no) NIRK = 1
+C     For implicit scheme, set to single stage RK, and a small starting
+C     cfl number, which will be progressively increased
+      if(timemode .ne. 1)then
+         NIRK = 1
+         cfl = 1.0d0
+      endif
 
       cl = 0.0d0
       cd = 0.0d0
@@ -391,22 +396,6 @@ C-----------------------------------------------------------------------------
       con(2) = prim(1)*prim(2)
       con(3) = prim(1)*prim(3)
       con(4) = prim(4)/GAMMA1 + 0.5d0*prim(1)*q2
-
-      return
-      end
-
-C-----------------------------------------------------------------------------
-C convert conserved variable to primitive variable
-C-----------------------------------------------------------------------------
-      subroutine con2prim(con, prim)
-      implicit none
-      include 'common.h'
-      double precision prim(nvar), con(nvar)
-
-      prim(1) = con(1)
-      prim(2) = con(2)/con(1)
-      prim(3) = con(3)/con(1)
-      prim(4) = GAMMA1*(con(4) - 0.5d0*(con(2)**2 + con(3)**2)/con(1))
 
       return
       end
