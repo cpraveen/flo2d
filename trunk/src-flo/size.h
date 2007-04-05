@@ -36,7 +36,7 @@ c Maximum elements surrounding a point
 
 c Maximum elements surrounding a point
       integer mesubp
-      parameter(mesubp=7)
+      parameter(mesubp=8)
 
 c Maximum points surrounding a point
       integer mpsup

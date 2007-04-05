@@ -14,7 +14,7 @@ C------------------------------------------------------------------------------
      +                 drmin(ntmax), res(nvar,ntmax), c1(nvar),
      +                 c2(nvar), c3(nvar)
       double precision cl, cd
-      double precision qx(3,npmax), qy(3,npmax)
+      double precision qx(3,npmax), qy(3,npmax), qcd(nvar,ntmax)
 
       integer          i, j, irk
 
@@ -25,6 +25,11 @@ C------------------------------------------------------------------------------
 
 C Set initial condition
       call initialize(qc, cl, cd)
+
+c     call test_resd(elem, edge, tedge, vedge, spts, bdedge,
+c    +                 coord, qc, qv, qx, qy, af, carea, dt, cl, cd,
+c    +                 res, qcd)
+c     stop
 
       iter = 0
       fres = 1.0d20
@@ -43,7 +48,7 @@ C           Compute finite volume residual
      +                      res)
 
 C           Update the solution
-            if(explicit .eq. yes)then
+            if(timemode .eq. 1)then
                do i=1,nt
                   call prim2con(qcold(1,i), c1)
                   call prim2con(qc(1,i),    c2)
@@ -53,9 +58,20 @@ C           Update the solution
                   enddo
                   call con2prim(c3, qc(1,i))
                enddo
-            else
+            elseif(timemode .eq. 2)then
                call lusgs(elem, esue, edge, tedge, coord, qcold, qc, 
      +                    res, dt, carea)
+            elseif(timemode .eq. 3)then
+               call gmres(elem, edge, tedge, vedge, spts, bdedge,
+     +                    coord, qc, qv, qx, qy, af, carea, dt, cl, cd,
+     +                    res, qcd)
+               do i=1,nt
+                  call prim2con(qc(1,i),    c2)
+                  do j=1,nvar
+                     c3(j) = c2(j) + qcd(j,i)
+                  enddo
+                  call con2prim(c3, qc(1,i))
+               enddo
             endif
 
          enddo
@@ -66,6 +82,12 @@ C           Update the solution
          write(99,'(i6,4e16.6)') iter, fres, fresi, cl, cd
          if(mod(iter,saveinterval) .eq. 0)then
             call write_result(coord, elem, edge, qc, qv, cl, cd)
+         endif
+
+         if(timemode.ne.1)then
+            cfl = dmax1(1.0d0, 10.0d0/fres)
+c           cfl = -2.0d0 + 3.0d0*iter
+            cfl = dmin1(cfl,1.0d5)
          endif
 
       enddo

@@ -17,9 +17,9 @@ c any other value implies hybrid grid
       common/files/gridfile,inpfile
 
       double precision CFL, MINRES, dtglobal
-      integer iter, ITERLAST, MAXITER, saveinterval, explicit
+      integer iter, ITERLAST, MAXITER, saveinterval, timemode
       common/itparam/CFL,MINRES,dtglobal,iter,ITERLAST,
-     &               MAXITER,saveinterval, explicit
+     &               MAXITER,saveinterval, timemode
 
       double precision airk(3), birk(3)
       integer NIRK
