@@ -5,8 +5,7 @@
      +                 coord, qc, qv, qx, qy, af, carea, dt, cl, cd,
      +                 res, qcd)
       implicit none
-      include 'size.h'
-      include 'common.h'
+      include 'param.h'
 
       integer          elem(3,ntmax), edge(2,nemax), tedge(2,nemax),
      +                 vedge(2,nemax), spts(nspmax), bdedge(2,nbpmax)
@@ -16,7 +15,7 @@
      +                 qy(3,npmax), cl, cd
 
       integer lda, ldstrt, lwork
-      parameter (lda = nvar*ntmax, ldstrt = 10)
+      parameter (lda = nvar*ntmax, ldstrt = 20)
       parameter (lwork = ldstrt**2 + ldstrt*(lda+5) + 5*lda + 1)
 
       integer i, j, n, m, icount
@@ -49,7 +48,8 @@ c     Number of unknowns = 4 * number of triangles
       do i=1,nt
          do j=1,nvar
             icount         = icount + 1
-            work(n+icount) = -dt(i)*res(j,i)/carea(i)
+c           work(n+icount) = -dt(i)*res(j,i)/carea(i)
+            work(n+icount) = -res(j,i)/carea(i)
          enddo
       enddo
 
@@ -68,17 +68,17 @@ c     Number of unknowns = 4 * number of triangles
 *c Tune some parameters
 *************************
 c     Residual tolerance
-      cntl(1) = 1.0d-2
+      cntl(1) = gerrtol
 
 * Save the convergence history on standard output
       icntl(1) = 0
       icntl(2) = 0
       icntl(3) = 0
 * Maximum number of iterations
-      icntl(7) = 15
+      icntl(7) = gmaxiter
 *
 * preconditioner location
-      icntl(4) = 1
+      icntl(4) = prectype
 * orthogonalization scheme
       icntl(5)=0
 * initial guess
@@ -118,7 +118,8 @@ c        work(colz) <-- A * work(colx)
          icount = 0
          do i=1,nt
             do j=1,nvar
-               work(colz+icount) = qcd(j,i) + dt(i)*resd(j,i)/carea(i)
+c              work(colz+icount) = qcd(j,i) + dt(i)*resd(j,i)/carea(i)
+               work(colz+icount) = qcd(j,i)/dt(i) + resd(j,i)/carea(i)
                icount            = icount + 1
             enddo
          enddo
@@ -132,9 +133,7 @@ c        work(colz) <-- M^{-1} * work(colx)
 
       else if (revcom.eq.precondRight) then
 c        perform the right preconditioning
-         call dcopy(n,work(colx),1,work(colz),1)
-         print*,'Right pre-conditioner not implemented'
-         stop
+         call precond(work(colx),work(colz))
          goto 10
 
       else if (revcom.eq.dotProd) then

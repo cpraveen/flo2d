@@ -74,6 +74,7 @@ C     Roe flux
          call  roe_flux_dq(coord(1,e1), coord(1,e2),
      +                     qc(1,c1), qcd(1,c1), qc(1,c2), qcd(1,c2),
      +                     qv(1,v1), qv(1,v2),
+c    +                     qv(1,v1), qvd(1,v1), qv(1,v2), qvd(1,v2),
      +                     resl, resd(1,c1), resr, resd(1,c2))
       enddo
 

@@ -34,7 +34,6 @@ c     stop
       iter = 0
       fres = 1.0d20
       call system('rm -f FLO.RES')
-      open(unit=99, file='FLO.RES')
       do while(iter .lt. MAXITER .and. fres .gt. MINRES)
 c        call time_step(drmin, qc, dt)
          call time_step2(edge, tedge, carea, coord, qc, dt)
@@ -79,19 +78,20 @@ C           Update the solution
          iter = iter + 1
          call residue(res)
          call clcd(edge, tedge, coord, qc, cl, cd)
+         open(unit=99, file='FLO.RES', access='append')
          write(99,'(i6,4e16.6)') iter, fres, fresi, cl, cd
+         close(99)
          if(mod(iter,saveinterval) .eq. 0)then
             call write_result(coord, elem, edge, qc, qv, cl, cd)
          endif
 
-         if(timemode.ne.1)then
-            cfl = dmax1(1.0d0, 10.0d0/fres)
+c        if(timemode.ne.1)then
+c           cfl = dmax1(1.0d0, 10.0d0/fres)
 c           cfl = -2.0d0 + 3.0d0*iter
-            cfl = dmin1(cfl,1.0d5)
-         endif
+c           cfl = dmin1(cfl,30.0d0)
+c        endif
 
       enddo
-      close(99)
 
       call write_result(coord, elem, edge, qc, qv, cl, cd)
       call write_sol(iter, fres, cl, cd)
