@@ -69,6 +69,7 @@ C-----------------------------------------------------------------------------
       read(inp,*)sdummy, Rey
       read(inp,*)sdummy, cfl
       read(inp,*)sdummy, timemode
+      read(inp,*)sdummy, gmaxiter, prectype, gerrtol
       read(inp,*)sdummy, iterlast
       read(inp,*)sdummy, maxiter
       read(inp,*)sdummy, minres
@@ -176,12 +177,8 @@ C     Runge-Kutta time stepping
       birk(2) = 1.0d0/4.0d0
       birk(3) = 2.0d0/3.0d0
 
-C     For implicit scheme, set to single stage RK, and a small starting
-C     cfl number, which will be progressively increased
-      if(timemode .ne. 1)then
-         NIRK = 1
-         cfl = 1.0d0
-      endif
+C     For implicit scheme, set to single stage RK
+      if(timemode .ne. 1) NIRK = 1
 
       cl = 0.0d0
       cd = 0.0d0

@@ -16,10 +16,12 @@ c any other value implies hybrid grid
       character gridfile*64, inpfile*32
       common/files/gridfile,inpfile
 
-      double precision CFL, MINRES, dtglobal
-      integer iter, ITERLAST, MAXITER, saveinterval, timemode
-      common/itparam/CFL,MINRES,dtglobal,iter,ITERLAST,
-     &               MAXITER,saveinterval, timemode
+      double precision CFL, MINRES, dtglobal, gerrtol
+      integer iter, ITERLAST, MAXITER, saveinterval, timemode,
+     &        gmaxiter, prectype
+      common/itparam/CFL,MINRES,dtglobal,gerrtol,iter,ITERLAST,
+     &               MAXITER,saveinterval, timemode, gmaxiter,
+     &               prectype
 
       double precision airk(3), birk(3)
       integer NIRK

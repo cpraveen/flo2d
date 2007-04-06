@@ -20,7 +20,8 @@ C     Initialize to identity
             do k=1,nvar
                dmat(j,k,i) = 0.0d0
             enddo
-            dmat(j,j,i) = 1.0d0
+c           dmat(j,j,i) = 1.0d0
+            dmat(j,j,i) = 1.0d0/dt(i)
          enddo
       enddo
 
@@ -31,8 +32,10 @@ C     Roe flux
          c1 = tedge(1,ie)
          c2 = tedge(2,ie)
          call roe_dmat(coord(1,e1), coord(1,e2), qc(1,c1), qc(1,c2), dm)
-         f1 = 0.5d0*dt(c1)/carea(c1)
-         f2 = 0.5d0*dt(c2)/carea(c2)
+c        f1 = 0.5d0*dt(c1)/carea(c1)
+c        f2 = 0.5d0*dt(c2)/carea(c2)
+         f1 = 0.5d0/carea(c1)
+         f2 = 0.5d0/carea(c2)
          do i=1,nvar
             do j=1,nvar
                dmat(i,j,c1) = dmat(i,j,c1) + f1*dm(i,j)
@@ -65,10 +68,11 @@ C------------------------------------------------------------------------------
       integer          i, j, k
       double precision rl, ul, vl, pl, al2, hl, rr, ur, vr, pr, ar2, hr,
      &                 ua, va, qa2, aa2, aa, ha, ra,
-     &                 ql2, qr2, rl12, rr12, rd,
+     &                 ql2, qr2, rl12, rr12, rd, uabs, mabs, ETOL,
      &                 unl, unr, una, vna, ct, st, lent,
      &                 m2, t1, t2, t3, t4, t5, l1, l2, l3, l4,
      &                 S(nvar,nvar), R(nvar,nvar)
+      parameter(ETOL=0.01d0)
 
       ct =  (x2(2) - x1(2))
       st = -(x2(1) - x1(1))
@@ -116,8 +120,16 @@ C     Roe average
       vna =-ua*st + va*ct
 
 C     Eigenvalues with entropy fix
-      l1 = dabs(una)
-      l2 = l1
+      uabs = dabs(una)
+      mabs = uabs/aa
+      if(mabs .gt. ETOL)then
+         l1 = uabs
+         l2 = uabs
+      else
+         l1 = 0.5d0*( ETOL + mabs**2/ETOL)*aa
+         l2 = l1
+      endif
+
       l3 = dabs(una + aa)
       l4 = dabs(una - aa)
 

@@ -4,7 +4,6 @@ include ../Makefile.in
 # fortran flags
 #
 FFLAGS   = ${CFLAGS}
-LIBGMRES = /usr/local/lib/libgmres.a
 
 #Tapenade command
 TPND    = ${TAPENADE_HOME}/bin/tapenade \
@@ -39,8 +38,7 @@ fvm   =   geometric.o \
 	       smooth.o \
 			 gradient.o \
 			 visc.o \
-			 sutherland.o \
-			 test_resd.o
+			 sutherland.o
 
 impl  =   fvresidual_q.o \
 			 average_q.o \
@@ -65,7 +63,7 @@ flo   =   ${fvm} ${impl} ${gmres}
 ALL:  $(TARGETS)
 
 flo:  ${flo}
-		${FC} -o flo ${flo} ${LIBGMRES} -lblas -llinpack
+		${FC} -o flo ${flo} ${LIBS}
 		@echo "==> Built ${TOLIMIT} version of flo"
 
 #This is to prevent these files from being automatically deleted by make
