@@ -48,7 +48,6 @@ c     Number of unknowns = 4 * number of triangles
       do i=1,nt
          do j=1,nvar
             icount         = icount + 1
-c           work(n+icount) = -dt(i)*res(j,i)/carea(i)
             work(n+icount) = -res(j,i)/carea(i)
          enddo
       enddo
@@ -91,6 +90,7 @@ c     icntl(8) = 1
       enddo
 
       call diag_matrix(edge, tedge, coord, qc, carea, dt)
+
 *****************************************
 ** Reverse communication implementation
 *****************************************
@@ -118,7 +118,6 @@ c        work(colz) <-- A * work(colx)
          icount = 0
          do i=1,nt
             do j=1,nvar
-c              work(colz+icount) = qcd(j,i) + dt(i)*resd(j,i)/carea(i)
                work(colz+icount) = qcd(j,i)/dt(i) + resd(j,i)/carea(i)
                icount            = icount + 1
             enddo

@@ -17,41 +17,41 @@ TARGETS = flo
 
 fvm   =   geometric.o \
           common.o \
-			 con2prim.o \
+          con2prim.o \
           main.o \
-			 fvresidual.o \
+          fvresidual.o \
           average.o \
           vaverage.o \
-	       killnormvel.o \
-	       solid_flux.o \
-	       farfield_flux.o \
-	       kfvs_flux.o \
-	       lax_flux.o \
-	       roe_flux.o \
-	       hcusp_flux.o \
-	       limit.o \
-	       result.o \
-	       clcd.o \
-	       avgfact1.o \
-	       avgfact2.o \
-	       lusgs.o \
-	       smooth.o \
-			 gradient.o \
-			 visc.o \
-			 sutherland.o
+          killnormvel.o \
+          solid_flux.o \
+          farfield_flux.o \
+          kfvs_flux.o \
+          lax_flux.o \
+          roe_flux.o \
+          hcusp_flux.o \
+          limit.o \
+          result.o \
+          clcd.o \
+          avgfact1.o \
+          avgfact2.o \
+          lusgs.o \
+          smooth.o \
+          gradient.o \
+          visc.o \
+          sutherland.o
 
 impl  =   fvresidual_q.o \
-			 average_q.o \
-			 vaverage_dq.o \
-			 killnormvel_dq.o \
-			 limit_dq.o \
-			 kfvs_flux_dq.o \
-			 roe_flux_dq.o  \
-			 solid_flux_dq.o \
-			 farfield_flux_dq.o \
-			 con2prim_dq.o \
-			 diag_matrix.o \
-			 precond.o
+          average_q.o \
+          vaverage_dq.o \
+          killnormvel_dq.o \
+          limit_dq.o \
+          kfvs_flux_dq.o \
+          roe_flux_dq.o  \
+          solid_flux_dq.o \
+          farfield_flux_dq.o \
+          con2prim_dq.o \
+          diag_matrix.o \
+          precond.o
 
 gmres =   gmres.o
 
@@ -92,12 +92,12 @@ limit.o:  limit.F ../Makefile.in
 # Forward derivatives for implicit shcheme
 ##############################################################################
 %_flux_dq.f:  %_flux.F
-		${GCC} -E -C -P -DFIRSTORDER $*_flux.F > $*_flux.f
+		${GCC} -E -C -P -DSECONDORDER $*_flux.F > $*_flux.f
 		${TPND} \
-		       -head       $*_flux             \
-		       -vars       "qcl qcr resl resr" \
-		       -outvars    "resl resr"         \
-		       -difffuncname "_dq"             \
+		       -head       $*_flux                     \
+		       -vars       "qcl qcr qvl qvr resl resr" \
+		       -outvars    "resl resr"                 \
+		       -difffuncname "_dq"                     \
 		        $*_flux.f
 		${RM} -f $*_flux.f
 

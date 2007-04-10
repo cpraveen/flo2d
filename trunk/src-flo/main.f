@@ -85,11 +85,12 @@ C           Update the solution
             call write_result(coord, elem, edge, qc, qv, cl, cd)
          endif
 
-c        if(timemode.ne.1)then
+         if(timemode.ne.1)then
 c           cfl = dmax1(1.0d0, 10.0d0/fres)
 c           cfl = -2.0d0 + 3.0d0*iter
-c           cfl = dmin1(cfl,30.0d0)
-c        endif
+            cfl = 1.0d0*iter
+            cfl = dmin1(cfl,30.0d0)
+         endif
 
       enddo
 
