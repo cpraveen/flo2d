@@ -14,13 +14,16 @@
 #TAPENADE_HOME=
 
 #To use or not: LIMITED or UNLIMITED
-TOLIMIT = UNLIMITED
-#TOLIMIT = LIMITED
+#TOLIMIT = UNLIMITED
+TOLIMIT = LIMITED
 
 #Libraries for gmres, linpack and blas
 LIBGMRES = ${HOME}/usr/local/lib/libgmres.a
 LIBLINP  = ${HOME}/usr/local/lib/liblinpack.a
 LIBBLAS  = ${HOME}/usr/local/lib/libblas.a
+LIBGMRES = /usr/local/lib/libgmres.a
+LIBLINP  = -llinpack
+LIBBLAS  = -lblas
 LIBS     = ${LIBGMRES} ${LIBLINP} ${LIBBLAS}
 
 ###############################################################################

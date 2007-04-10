@@ -13,7 +13,7 @@ c Roe flux function
      &                 m1, m2, a1, a2, a3, a4, l1, l2, l3, l4,
      &                 a1l1, a2l2, a3l3, a4l4, aact, aast,
      &                 du1, du2, du3, du4, flux, dl, dr, li(4), limit,
-     &                 lent, uabs, mabs, ETOL
+     &                 lent, e1, e4, del, ETOL
       parameter(ETOL=0.01d0)
       intrinsic        dmin1
 
@@ -109,18 +109,23 @@ C     Roe average
       vna =-ua*st + va*ct
 
 C     Eigenvalues with entropy fix
-      l1 = dabs(una - aa)
-      uabs = dabs(una)
-      mabs = uabs/aa
-      if(mabs .gt. ETOL)then
-         l2 = uabs
-         l3 = uabs
+      e1 = dabs(una - aa)
+      l2 = dabs(una)
+      l3 = l2
+      e4 = dabs(una + aa)
+
+      del= ETOL*aa
+      if(e1 .lt. del)then
+         l1 = 0.5d0*(del + e1**2/del)
       else
-         l2 = 0.5d0*( ETOL + mabs**2/ETOL)*aa
-         l3 = l2
+         l1 = e1
       endif
 
-      l4 = dabs(una + aa)
+      if(e4 .lt. del)then
+         l4 = 0.5d0*(del + e4**2/del)
+      else
+         l4 = e4
+      endif
 
 c     Difference of conserved variables
       du1 = rr           - rl
