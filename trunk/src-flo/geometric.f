@@ -46,7 +46,7 @@ c For each solid wall point find two edges adjoining it
       call bdedges(spts, ptype, edge, bdedge)
 
 c     Element surrounding element
-      call el_surr_el(elem, edge, edneigh, esue)
+      call el_surr_el(elem, edge, edneigh, ptype, esue)
 
 c     Smooth the grid using Laplacian smoothing
 c     call smooth(ptype, psup1, psup2, elem, esup1, esup2, coord)
@@ -662,11 +662,11 @@ C the edge. This is used for limited reconstruction of inviscid fluxes
 C-----------------------------------------------------------------------------
 C Find triangles surrounding a triangle, ie, face neighbours
 C-----------------------------------------------------------------------------
-      subroutine el_surr_el(elem, edge, edneigh, esue)
+      subroutine el_surr_el(elem, edge, edneigh, ptype, esue)
       implicit none
       include 'param.h'
       integer elem(3,ntmax), edge(2,nemax), edneigh(2,nemax),
-     +        esue(3,ntmax)
+     +        ptype(npmax), esue(3,ntmax)
 
       integer it, ie, e1, e2, c1, c2, p1, p2, p3, q1, q2, q3
 
@@ -715,6 +715,31 @@ C-----------------------------------------------------------------------------
 
          endif
 
+      enddo
+
+c     If triangle is on boundary, we give flag to identify the edge
+      do it=1,nt
+         p1 = elem(1,it)
+         p2 = elem(2,it)
+         p3 = elem(3,it)
+         if(ptype(p1).eq.SOLID.and.ptype(p2).eq.SOLID)then
+            esue(1,it)=-SOLID
+         endif
+         if(ptype(p2).eq.SOLID.and.ptype(p3).eq.SOLID)then
+            esue(2,it)=-SOLID
+         endif
+         if(ptype(p3).eq.SOLID.and.ptype(p1).eq.SOLID)then
+            esue(3,it)=-SOLID
+         endif
+         if(ptype(p1).eq.farfield.and.ptype(p2).eq.farfield)then
+            esue(1,it)=-farfield
+         endif
+         if(ptype(p2).eq.farfield.and.ptype(p3).eq.farfield)then
+            esue(2,it)=-farfield
+         endif
+         if(ptype(p3).eq.farfield.and.ptype(p1).eq.farfield)then
+            esue(3,it)=-farfield
+         endif
       enddo
 
       return
