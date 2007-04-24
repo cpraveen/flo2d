@@ -51,6 +51,8 @@ impl  =   fvresidual_q.o \
           farfield_flux_dq.o \
           con2prim_dq.o \
           diag_matrix.o \
+			 flux_jacob.o \
+			 jacobian.o \
           precond.o
 
 gmres =   gmres.o
@@ -168,7 +170,7 @@ con2prim_dq.f: con2prim.f
 ##############################################################################
 
 clean:	
-	${RM} -f *.o *_bq.msg *~ $(TARGETS)
+	${RM} -f *.o *.msg *~ $(TARGETS)
 
 allclean:	
-	${RM} -f *.o *_bq.msg *~ *_dq.f $(TARGETS)
+	${RM} -f *.o *.msg *~ *_dq.f $(TARGETS)
