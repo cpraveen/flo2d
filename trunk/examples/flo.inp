@@ -1,13 +1,13 @@
 Start     1
 FlowType  1
-Mach      1.20
-AOA       0.00
+Mach      0.85
+AOA       1.00
 Reynolds  100.0
-CFL       1.0
-Timemode  3
-GMRES     10 1 0.01
+CFL       1000.0
+Timemode  2
+GMRES     20 1 0.00001
 LastIter  0
-MaxIter   20000
+MaxIter   5000
 MinRes    1.0e-6
 SaveInt   25
 NoIso     30
