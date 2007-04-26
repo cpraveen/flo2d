@@ -112,7 +112,7 @@ C Forward loop
             cres(iv) = 0.0d0
          enddo
 
-         if(t1 .lt. it .and. t1 .ne. 0)then
+         if(t1 .lt. it .and. t1 .gt. 0)then
             call normalflux(sx1, sy1, qcold(1,t1),  flux1)
             call normalflux(sx1, sy1, qc(1,t1), flux2)
             call maxeig(sx1, sy1, ds1, qcold(1,t1), lam1)
@@ -126,7 +126,7 @@ C Forward loop
             enddo
          endif
 
-         if(t2 .lt. it .and. t2 .ne. 0)then
+         if(t2 .lt. it .and. t2 .gt. 0)then
             call normalflux(sx2, sy2, qcold(1,t2),  flux1)
             call normalflux(sx2, sy2, qc(1,t2), flux2)
             call maxeig(sx2, sy2, ds2, qcold(1,t2), lam2)
@@ -140,7 +140,7 @@ C Forward loop
             enddo
          endif
 
-         if(t3 .lt. it .and. t3 .ne. 0)then
+         if(t3 .lt. it .and. t3 .gt. 0)then
             call normalflux(sx3, sy3, qcold(1,t3),  flux1)
             call normalflux(sx3, sy3, qc(1,t3), flux2)
             call maxeig(sx3, sy3, ds3, qcold(1,t3), lam3)
@@ -189,7 +189,7 @@ C Reverse loop
             cres(iv) = 0.0d0
          enddo
 
-         if(t1 .gt. it .and. t1 .ne. 0)then
+         if(t1 .gt. it .and. t1 .gt. 0)then
             call normalflux(sx1, sy1, qcold(1,t1),  flux1)
             call normalflux(sx1, sy1, qc(1,t1), flux2)
             call maxeig(sx1, sy1, ds1, qcold(1,t1), lam1)
@@ -203,7 +203,7 @@ C Reverse loop
             enddo
          endif
 
-         if(t2 .gt. it .and. t2 .ne. 0)then
+         if(t2 .gt. it .and. t2 .gt. 0)then
             call normalflux(sx2, sy2, qcold(1,t2),  flux1)
             call normalflux(sx2, sy2, qc(1,t2), flux2)
             call maxeig(sx2, sy2, ds2, qcold(1,t2), lam2)
@@ -217,7 +217,7 @@ C Reverse loop
             enddo
          endif
 
-         if(t3 .gt. it .and. t3 .ne. 0)then
+         if(t3 .gt. it .and. t3 .gt. 0)then
             call normalflux(sx3, sy3, qcold(1,t3),  flux1)
             call normalflux(sx3, sy3, qc(1,t3), flux2)
             call maxeig(sx3, sy3, ds3, qcold(1,t3), lam3)

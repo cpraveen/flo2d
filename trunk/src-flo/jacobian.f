@@ -111,26 +111,26 @@ c        Put jacobian in CSR format
 
       enddo
 
-      ia(rcount+1) = jcount
+      ia(rcount+1) = jcount + 1
 
 c     Perform two transpositions to order the columns
-c     call csrcsc(4*nt, 1, 1, jmat, ja, ia, alu, jlu, ju)
-c     call csrcsc(4*nt, 1, 1, alu, jlu, ju, jmat, ja, ia)
+      call csrcsc(4*nt, 1, 1, jmat, ja, ia, alu, jlu, ju)
+      call csrcsc(4*nt, 1, 1, alu, jlu, ju, jmat, ja, ia)
 
 c     Compute ILU(0)
-c     call ilu0(nvar*nt, jmat, ja, ia, alu, jlu, ju, iw, ierr)
+      call ilu0(nvar*nt, jmat, ja, ia, alu, jlu, ju, iw, ierr)
 
-      do irow=1,1
-      t1=ia(irow)
-      t2=ia(irow+1)-1
-      print*,'begin,end=',t1,t2
-      do i=t1,t2
-      print*,ja(i),jmat(i)
-      enddo
-      enddo
+c     do irow=1,1
+c     t1=ia(irow)
+c     t2=ia(irow+1)-1
+c     print*,'begin,end=',t1,t2
+c     do i=t1,t2
+c     print*,ja(i),jmat(i)
+c     enddo
+c     enddo
 
-      print*,'jcount =',jcount
-      print*,'rcount =',rcount
+c     print*,'jcount =',jcount
+c     print*,'rcount =',rcount
 
       return
       end
