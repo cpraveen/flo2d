@@ -778,7 +778,7 @@ C-----------------------------------------------------------------------------
      +        tesue(3,ntmax)
       integer i, j, it, t1, t2, t3, tcount
 
-      print*,'Renumbering cells for LUSGS...'
+      print*,'Renumbering cells using Cuthill-McKee...'
 
       do i=1,nt
          oldnum(i) = 0

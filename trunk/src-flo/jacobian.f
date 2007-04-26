@@ -1,16 +1,29 @@
-      subroutine jacobian(elem, esue, coord, qc, jmat, ja, ia)
+C------------------------------------------------------------------------------
+C Compute and assemble first order jacobian in CSR format
+C computes by looping over triangles
+C------------------------------------------------------------------------------
+      subroutine jacobian(elem, esue, coord, carea, dt, qc)
       implicit none
       include 'param.h'
-      integer          elem(3,*), esue(3,*), ja(*), ia(*)
-      double precision coord(2,*), qc(nvar,*), jmat(*)
+      include 'data.h'
+      integer          elem(3,*), esue(3,*)
+      double precision coord(2,*), carea(*), dt(*), qc(nvar,*)
 
-      integer          it, i, j, p1, p2, p3, t1, t2, t3, nzrow, irow
+      integer          it, i, j, p1, p2, p3, t1, t2, t3, irow, 
+     +                 icol, jcount, rcount, iw(nvar*ntmax), ierr
       double precision j0(nvar,nvar), j1(nvar,nvar), j2(nvar,nvar),
-     +                 j3(nvar,nvar)
+     +                 j3(nvar,nvar), fact
 
-      count = 0
+c     Count number of elements in jmat
+      jcount = 0
 
+c     Count number of rows
+      rcount = 0
+
+c     Loop over triangles
       do it=1,nt
+
+         fact = carea(it)/dt(it)
 
          do i=1,nvar
             do j=1,nvar
@@ -19,6 +32,7 @@
                j2(i,j) = 0.0d0
                j3(i,j) = 0.0d0
             enddo
+            j0(i,i)    = fact
          enddo
 
 c        vertices of the triangle
@@ -58,49 +72,65 @@ c        neighbouring triangles
             call flux_jacob(coord(1,p3),coord(1,p1),qc(1,it),j0,+1)
          endif
 
-c        number of non-zero elements in each row
-         nzrow = nvar
-         if(t1.gt.0) nzrow = nzrow + nvar
-         if(t2.gt.0) nzrow = nzrow + nvar
-         if(t3.gt.0) nzrow = nzrow + nvar
-
 c        Put jacobian in CSR format
          do irow=1,nvar
+            rcount     = rcount + 1
+            ia(rcount) = jcount + 1
 
             do icol=1,nvar
-               count       = count + 1
-               jmat(count) = j0(irow,icol)
-               ja(count)   = (it-1)*nvar + icol
+               jcount       = jcount + 1
+               jmat(jcount) = j0(irow,icol)
+               ja(jcount)   = (it-1)*nvar + icol
             enddo
 
             if(t1.gt.0)then
                do icol=1,nvar
-                  count       = count + 1
-                  jmat(count) = j1(irow,icol)
-                  ja(count)   = (t1-1)*nvar + icol
+                  jcount       = jcount + 1
+                  jmat(jcount) = j1(irow,icol)
+                  ja(jcount)   = (t1-1)*nvar + icol
                enddo
             endif
 
             if(t2.gt.0)then
                do icol=1,nvar
-                  count       = count + 1
-                  jmat(count) = j2(irow,icol)
-                  ja(count)   = (t2-1)*nvar + icol
+                  jcount       = jcount + 1
+                  jmat(jcount) = j2(irow,icol)
+                  ja(jcount)   = (t2-1)*nvar + icol
                enddo
             endif
 
             if(t3.gt.0)then
                do icol=1,nvar
-                  count       = count + 1
-                  jmat(count) = j3(irow,icol)
-                  ja(count)   = (t3-1)*nvar + icol
+                  jcount       = jcount + 1
+                  jmat(jcount) = j3(irow,icol)
+                  ja(jcount)   = (t3-1)*nvar + icol
                enddo
             endif
 
-            ia(rcount) = 1
          enddo
 
       enddo
+
+      ia(rcount+1) = jcount
+
+c     Perform two transpositions to order the columns
+c     call csrcsc(4*nt, 1, 1, jmat, ja, ia, alu, jlu, ju)
+c     call csrcsc(4*nt, 1, 1, alu, jlu, ju, jmat, ja, ia)
+
+c     Compute ILU(0)
+c     call ilu0(nvar*nt, jmat, ja, ia, alu, jlu, ju, iw, ierr)
+
+      do irow=1,1
+      t1=ia(irow)
+      t2=ia(irow+1)-1
+      print*,'begin,end=',t1,t2
+      do i=t1,t2
+      print*,ja(i),jmat(i)
+      enddo
+      enddo
+
+      print*,'jcount =',jcount
+      print*,'rcount =',rcount
 
       return
       end

@@ -20,7 +20,7 @@ C     Initialize to identity
             do k=1,nvar
                dmat(j,k,i) = 0.0d0
             enddo
-            dmat(j,j,i) = 1.0d0/dt(i)
+            dmat(j,j,i) = carea(i)/dt(i)
          enddo
       enddo
 
@@ -31,12 +31,10 @@ C     Roe flux
          c1 = tedge(1,ie)
          c2 = tedge(2,ie)
          call roe_dmat(coord(1,e1), coord(1,e2), qc(1,c1), qc(1,c2), dm)
-         f1 = 0.5d0/carea(c1)
-         f2 = 0.5d0/carea(c2)
          do i=1,nvar
             do j=1,nvar
-               dmat(i,j,c1) = dmat(i,j,c1) + f1*dm(i,j)
-               dmat(i,j,c2) = dmat(i,j,c2) + f2*dm(i,j)
+               dmat(i,j,c1) = dmat(i,j,c1) + 0.5d0*dm(i,j)
+               dmat(i,j,c2) = dmat(i,j,c2) + 0.5d0*dm(i,j)
             enddo
          enddo
       enddo

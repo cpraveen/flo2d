@@ -48,7 +48,7 @@ c     Number of unknowns = 4 * number of triangles
       do i=1,nt
          do j=1,nvar
             icount         = icount + 1
-            work(n+icount) = -res(j,i)/carea(i)
+            work(n+icount) = -res(j,i)
          enddo
       enddo
 
@@ -118,7 +118,7 @@ c        work(colz) <-- A * work(colx)
          icount = 0
          do i=1,nt
             do j=1,nvar
-               work(colz+icount) = qcd(j,i)/dt(i) + resd(j,i)/carea(i)
+               work(colz+icount) = carea(i)*qcd(j,i)/dt(i) + resd(j,i)
                icount            = icount + 1
             enddo
          enddo

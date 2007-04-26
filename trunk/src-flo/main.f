@@ -31,6 +31,10 @@ c    +                 coord, qc, qv, qx, qy, af, carea, dt, cl, cd,
 c    +                 res, qcd)
 c     stop
 
+      call time_step2(edge, tedge, carea, coord, qc, dt)
+      call jacobian(elem, esue, coord, carea, dt, qc)
+      stop
+
       iter = 0
       fres = 1.0d20
       call system('rm -f FLO.RES')
