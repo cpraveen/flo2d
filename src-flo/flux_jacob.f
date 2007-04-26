@@ -1,5 +1,5 @@
 C------------------------------------------------------------------------------
-C     Computes roe dissipation matrix
+C     Computes euler split flux jacobians
 C------------------------------------------------------------------------------
       subroutine flux_jacob(x1, x2, qc, jac, mode)
       implicit none
@@ -8,11 +8,10 @@ C------------------------------------------------------------------------------
       double precision x1(2), x2(2), qc(*), jac(nvar,nvar)
 
       integer          i, j, k
-      double precision 
-     &                 ua, va, pa, qa2, aa2, aa, ha, ra,
+      double precision ua, va, pa, qa2, aa2, aa, ha, ra,
      &                 una, vna, ct, st, lent,
      &                 m2, t1, t2, t3, t4, t5, l1, l2, l3, l4,
-     &                 S(nvar,nvar), R(nvar,nvar)
+     &                 S(nvar,nvar), R(nvar,nvar), jtmp
 
       ct =  (x2(2) - x1(2))
       st = -(x2(1) - x1(1))
@@ -28,7 +27,7 @@ C     State
       qa2= ua**2 + va**2
       aa2= GAMMA*pa/ra
       aa = dsqrt(aa2)
-      ha = aa2/GAMMA1 + 0.5d0*qa2
+      ha = aa2/gamma1 + 0.5d0*qa2
 
 C     Rotated velocity
       una = ua*ct + va*st
@@ -98,7 +97,7 @@ c     Inverse of right eigenvector matrix
       S(3,4) = t5
       S(4,4) = t5
 
-c     Multiply lambda * S
+c     Multiply R * lambda
       do i=1,nvar
          R(i,1) = l1*R(i,1)
          R(i,2) = l2*R(i,2)
@@ -109,11 +108,11 @@ c     Multiply lambda * S
 c     Now multiply with S
       do i=1,nvar
          do j=1,nvar
-            jac(i,j) = 0.0d0
+            jtmp = 0.0d0
             do k=1,nvar
-               jac(i,j) = jac(i,j) + R(i,k)*S(k,j)
+               jtmp = jtmp + R(i,k)*S(k,j)
             enddo
-            jac(i,j) = lent*jac(i,j)
+            jac(i,j) = jac(i,j) + lent*jtmp
          enddo
       enddo
 
@@ -121,7 +120,7 @@ c     Now multiply with S
       end
 
 C------------------------------------------------------------------------------
-C     Computes roe dissipation matrix
+C     Computes jacobian for solid wall flux
 C------------------------------------------------------------------------------
       subroutine solid_flux_jacob(x1, x2, qc, jac)
       implicit none
@@ -133,7 +132,6 @@ C------------------------------------------------------------------------------
       ct =  (x2(2) - x1(2))
       st = -(x2(1) - x1(1))
 
-C     State
       u  = qc(2)
       v  = qc(3)
       q2 = u**2 + v**2

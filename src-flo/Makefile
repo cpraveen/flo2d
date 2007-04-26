@@ -53,6 +53,7 @@ impl  =   fvresidual_q.o \
           diag_matrix.o \
 			 flux_jacob.o \
 			 jacobian.o \
+          sparsekit.o \
           precond.o
 
 gmres =   gmres.o
@@ -66,6 +67,7 @@ ALL:  $(TARGETS)
 
 flo:  ${flo}
 		${FC} -o flo ${flo} ${LIBS}
+		@${RM} -f *.msg *~
 		@echo "==> Built ${TOLIMIT} version of flo"
 
 #This is to prevent these files from being automatically deleted by make
