@@ -31,9 +31,9 @@ c    +                 coord, qc, qv, qx, qy, af, carea, dt, cl, cd,
 c    +                 res, qcd)
 c     stop
 
-      call time_step2(edge, tedge, carea, coord, qc, dt)
-      call jacobian(elem, esue, coord, carea, dt, qc)
-      stop
+c     call time_step2(edge, tedge, carea, coord, qc, dt)
+c     call jacobian(elem, esue, coord, carea, dt, qc)
+c     stop
 
       iter = 0
       fres = 1.0d20
@@ -65,7 +65,7 @@ C           Update the solution
                call lusgs(elem, esue, edge, tedge, coord, qcold, qc, 
      +                    res, dt, carea)
             elseif(timemode .eq. 3)then
-               call gmres(elem, edge, tedge, vedge, spts, bdedge,
+               call gmres(elem, esue, edge, tedge, vedge, spts, bdedge,
      +                    coord, qc, qv, qx, qy, af, carea, dt, cl, cd,
      +                    res, qcd)
                do i=1,nt
@@ -89,12 +89,12 @@ C           Update the solution
             call write_result(coord, elem, edge, qc, qv, cl, cd)
          endif
 
-         if(timemode.ne.1)then
-c           cfl = dmax1(1.0d0, 10.0d0/fres)
+c        if(timemode.ne.1)then
+c           cfl = dmax1(1.0d0, 1.0d0/fres)
 c           cfl = -2.0d0 + 3.0d0*iter
-            cfl = 1.0d0*iter
-            cfl = dmin1(cfl,30.0d0)
-         endif
+c           cfl = 1.0d0*iter
+c           cfl = dmin1(cfl,20.0d0)
+c        endif
 
       enddo
 

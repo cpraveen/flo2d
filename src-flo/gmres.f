@@ -1,14 +1,16 @@
 *************************************************************************
 **                 DRIVER FOR THE GMRes CODE
 *************************************************************************
-      subroutine gmres(elem, edge, tedge, vedge, spts, bdedge,
+      subroutine gmres(elem, esue, edge, tedge, vedge, spts, bdedge,
      +                 coord, qc, qv, qx, qy, af, carea, dt, cl, cd,
      +                 res, qcd)
       implicit none
       include 'param.h'
+      include 'data.h'
 
-      integer          elem(3,ntmax), edge(2,nemax), tedge(2,nemax),
-     +                 vedge(2,nemax), spts(nspmax), bdedge(2,nbpmax)
+      integer          elem(3,ntmax), esue(3,ntmax), edge(2,nemax), 
+     +                 tedge(2,nemax), vedge(2,nemax), spts(nspmax), 
+     +                 bdedge(2,nbpmax)
       double precision coord(2,npmax), qc(nvar,ntmax), af(3,npmax),
      +                 qv(nvar,npmax), carea(ntmax), res(nvar,ntmax),
      +                 qcd(nvar,ntmax), dt(ntmax), qx(3,npmax),
@@ -89,7 +91,8 @@ c     icntl(8) = 1
         work(j) = ZERO
       enddo
 
-      call diag_matrix(edge, tedge, coord, qc, carea, dt)
+c     call diag_matrix(edge, tedge, coord, qc, carea, dt)
+      call jacobian(elem, esue, coord, carea, dt, qc)
 
 *****************************************
 ** Reverse communication implementation
@@ -127,12 +130,14 @@ c        work(colz) <-- A * work(colx)
       else if (revcom.eq.precondLeft) then
 c        perform the left preconditioning
 c        work(colz) <-- M^{-1} * work(colx)
-         call precond(work(colx),work(colz))
+c        call precond(work(colx),work(colz))
+         call lusol(n, work(colx), work(colz), alu, jlu, ju)
          goto 10
 
       else if (revcom.eq.precondRight) then
 c        perform the right preconditioning
-         call precond(work(colx),work(colz))
+c        call precond(work(colx),work(colz))
+         call lusol(n, work(colx), work(colz), alu, jlu, ju)
          goto 10
 
       else if (revcom.eq.dotProd) then
