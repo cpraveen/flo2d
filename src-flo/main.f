@@ -15,6 +15,7 @@ C------------------------------------------------------------------------------
      +                 c2(nvar), c3(nvar)
       double precision cl, cd
       double precision qx(3,npmax), qy(3,npmax), qcd(nvar,ntmax)
+      real etime, elapsed(2), totaltime
 
       integer          i, j, irk
 
@@ -26,10 +27,10 @@ C------------------------------------------------------------------------------
 C Set initial condition
       call initialize(qc, cl, cd)
 
-c     call test_resd(elem, edge, tedge, vedge, spts, bdedge,
-c    +                 coord, qc, qv, qx, qy, af, carea, dt, cl, cd,
-c    +                 res, qcd)
-c     stop
+      call test_resd(elem, edge, tedge, vedge, spts, bdedge,
+     +                 coord, qc, qv, qx, qy, af, carea, dt, cl, cd,
+     +                 res, qcd)
+      stop
 
 c     call time_step2(edge, tedge, carea, coord, qc, dt)
 c     call jacobian(elem, esue, coord, carea, dt, qc)
@@ -89,17 +90,24 @@ C           Update the solution
             call write_result(coord, elem, edge, qc, qv, cl, cd)
          endif
 
-c        if(timemode.ne.1)then
-c           cfl = dmax1(1.0d0, 1.0d0/fres)
+         if(timemode.eq.3)then
+            cfl = dmax1(1.0d0, 1.0d0/fres)
 c           cfl = -2.0d0 + 3.0d0*iter
 c           cfl = 1.0d0*iter
-c           cfl = dmin1(cfl,20.0d0)
-c        endif
+            cfl = dmin1(cfl,20.0d0)
+         endif
 
       enddo
 
       call write_result(coord, elem, edge, qc, qv, cl, cd)
       call write_sol(iter, fres, cl, cd)
+
+      totaltime = etime(elapsed)
+      totaltime = totaltime/60.0
+      elapsed(1)= elapsed(1)/60.0
+      elapsed(2)= elapsed(1)/60.0
+      print *, 'Time: total=', totaltime, ' user=', elapsed(1),
+     +         ' system=', elapsed(2)
 
       stop
       end

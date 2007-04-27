@@ -54,7 +54,8 @@ impl  =   fvresidual_q.o \
 			 flux_jacob.o \
 			 jacobian.o \
           sparsekit.o \
-          precond.o
+          precond.o \
+          test_resd.o
 
 gmres =   gmres.o
 
