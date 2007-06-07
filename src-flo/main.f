@@ -27,10 +27,12 @@ C------------------------------------------------------------------------------
 C Set initial condition
       call initialize(qc, cl, cd)
 
-      call test_resd(elem, edge, tedge, vedge, spts, bdedge,
-     +                 coord, qc, qv, qx, qy, af, carea, dt, cl, cd,
-     +                 res, qcd)
-      stop
+C For testing AD gradients
+c     call test_resd(elem, edge, tedge, vedge, spts, bdedge,
+c    +                 coord, qc, qv, qx, qy, af, carea, dt, cl, cd,
+c    +                 res, qcd)
+c     call write_result(coord, elem, edge, qc, qv, cl, cd)
+c     stop
 
 c     call time_step2(edge, tedge, carea, coord, qc, dt)
 c     call jacobian(elem, esue, coord, carea, dt, qc)

@@ -7,6 +7,7 @@
       implicit none
       include 'size.h'
       include 'common.h'
+      include 'inf.h'
 
       integer          elem(3,ntmax), edge(2,nemax), tedge(2,nemax),
      +                 vedge(2,nemax), spts(nspmax), bdedge(2,nbpmax)
@@ -15,7 +16,8 @@
      +                 qcd(nvar,ntmax), dt(ntmax), qx(3,npmax),
      +                 qy(3,npmax), cl, cd
 
-      integer          i, j, n, m, icount, p1, p2, p3
+      integer i, j, n, m, icount, p1, p2, p3
+
       double precision resd(nvar,ntmax), res1(nvar,ntmax)
       double precision x, y, r, u, v, p, con(nvar), con1(nvar), r1, r2,
      +                 r3, r4, qc1(nvar,ntmax), fd, ad, eps, err
@@ -37,15 +39,15 @@
          x = (coord(1,p1) + coord(1,p2) + coord(1,p3))/3.0d0
          y = (coord(2,p1) + coord(2,p2) + coord(2,p3))/3.0d0
 
-c        r = dsin(x)**2 * dcos(y)**2 + 1.0d0
-c        u = dcos(x)*dexp(-y*y)
-c        v = dsin(y)*dexp(-x*x)
-c        p = dabs(dsin(x+y)) + 1.0d0
+         r = r_inf + dexp(-x**2-y**2)*dsin(x)**2 * dcos(y)**2
+         u = u_inf + dexp(-x**2-y**2)*dcos(x)*dsin(y)
+         v = v_inf + dexp(-x**2-y**2)*dsin(x)*dcos(y)
+         p = p_inf + dexp(-x**2-y**2)*dabs(dsin(x+y))
 
-         r = 1.0d0
-         u = 0.5d0
-         v = 0.5d0
-         p = 1.0d0
+c        r = r_inf
+c        u = u_inf
+c        v = v_inf
+c        p = p_inf
 
          qc(1,i) = r
          qc(2,i) = u
