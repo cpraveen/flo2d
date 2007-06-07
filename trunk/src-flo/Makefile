@@ -78,7 +78,7 @@ flo:  ${flo}
 # transformation rules
 ##############################################################################
 
-.f.o:     ; ${FC} ${FFLAGS} -c $*.f
+.f.o:     ; ${FC} ${FFLAGS}                     -c $*.f
 .c.o:     ; ${CC} ${CFLAGS} -c $*.c
 
 #Flux subroutines: They must be named as somename_flux.F
