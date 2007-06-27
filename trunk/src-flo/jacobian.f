@@ -2,12 +2,12 @@ C------------------------------------------------------------------------------
 C Compute and assemble first order jacobian in CSR format
 C computes by looping over triangles
 C------------------------------------------------------------------------------
-      subroutine jacobian(elem, esue, coord, carea, dt, qc)
+      subroutine jacobian(elem, esue, coord, tarea, dt, qc)
       implicit none
       include 'param.h'
       include 'data.h'
       integer          elem(3,*), esue(3,*)
-      double precision coord(2,*), carea(*), dt(*), qc(nvar,*)
+      double precision coord(2,*), tarea(*), dt(*), qc(nvar,*)
 
       integer          it, i, j, p1, p2, p3, t1, t2, t3, irow, 
      +                 icol, jcount, rcount, iw(nvar*ntmax), ierr
@@ -23,7 +23,7 @@ c     Count number of rows
 c     Loop over triangles
       do it=1,nt
 
-         fact = carea(it)/dt(it)
+         fact = tarea(it)/dt(it)
 
          do i=1,nvar
             do j=1,nvar

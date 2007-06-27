@@ -2,7 +2,7 @@
 **                 DRIVER FOR THE GMRes CODE
 *************************************************************************
       subroutine gmres(elem, esue, edge, tedge, vedge, spts, bdedge,
-     +                 coord, qc, qv, qx, qy, af, carea, dt, cl, cd,
+     +                 coord, qc, qv, qx, qy, af, tarea, dt, cl, cd,
      +                 res, qcd)
       implicit none
       include 'param.h'
@@ -12,7 +12,7 @@
      +                 tedge(2,nemax), vedge(2,nemax), spts(nspmax), 
      +                 bdedge(2,nbpmax)
       double precision coord(2,npmax), qc(nvar,ntmax), af(3,npmax),
-     +                 qv(nvar,npmax), carea(ntmax), res(nvar,ntmax),
+     +                 qv(nvar,npmax), tarea(ntmax), res(nvar,ntmax),
      +                 qcd(nvar,ntmax), dt(ntmax), qx(3,npmax),
      +                 qy(3,npmax), cl, cd
 
@@ -91,8 +91,8 @@ c     icntl(8) = 1
         work(j) = ZERO
       enddo
 
-c     call diag_matrix(edge, tedge, coord, qc, carea, dt)
-      call jacobian(elem, esue, coord, carea, dt, qc)
+c     call diag_matrix(edge, tedge, coord, qc, tarea, dt)
+      call jacobian(elem, esue, coord, tarea, dt, qc)
 
 *****************************************
 ** Reverse communication implementation
@@ -116,12 +116,12 @@ c        work(colz) <-- A * work(colx)
             enddo
          enddo
          call fvresidual_q(elem, edge, tedge, vedge, spts, bdedge,
-     +                     coord, qc, qv, qx, qy, af, carea, cl, cd, 
+     +                     coord, qc, qv, qx, qy, af, tarea, cl, cd, 
      +                     qcd, resd)
          icount = 0
          do i=1,nt
             do j=1,nvar
-               work(colz+icount) = carea(i)*qcd(j,i)/dt(i) + resd(j,i)
+               work(colz+icount) = tarea(i)*qcd(j,i)/dt(i) + resd(j,i)
                icount            = icount + 1
             enddo
          enddo

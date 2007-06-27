@@ -2,7 +2,7 @@
 **                 DRIVER FOR THE GMRes CODE
 *************************************************************************
       subroutine test_resd(elem, edge, tedge, vedge, spts, bdedge,
-     +                 coord, qc, qv, qx, qy, af, carea, dt, cl, cd,
+     +                 coord, qc, qv, qx, qy, af, tarea, dt, cl, cd,
      +                 res, qcd)
       implicit none
       include 'size.h'
@@ -12,7 +12,7 @@
       integer          elem(3,ntmax), edge(2,nemax), tedge(2,nemax),
      +                 vedge(2,nemax), spts(nspmax), bdedge(2,nbpmax)
       double precision coord(2,npmax), qc(nvar,ntmax), af(3,npmax),
-     +                 qv(nvar,npmax), carea(ntmax), res(nvar,ntmax),
+     +                 qv(nvar,npmax), tarea(ntmax), res(nvar,ntmax),
      +                 qcd(nvar,ntmax), dt(ntmax), qx(3,npmax),
      +                 qy(3,npmax), cl, cd
 
@@ -64,15 +64,15 @@ c        p = p_inf
       enddo
 
       call fvresidual(elem, edge, tedge, vedge, spts, bdedge,
-     +                coord, qc, qv, qx, qy, af, carea, cl, cd, 
+     +                coord, qc, qv, qx, qy, af, tarea, cl, cd, 
      +                res)
 
       call fvresidual(elem, edge, tedge, vedge, spts, bdedge,
-     +                coord, qc1, qv, qx, qy, af, carea, cl, cd, 
+     +                coord, qc1, qv, qx, qy, af, tarea, cl, cd, 
      +                res1)
 
       call fvresidual_q(elem, edge, tedge, vedge, spts, bdedge,
-     +                  coord, qc, qv, qx, qy, af, carea, cl, cd, 
+     +                  coord, qc, qv, qx, qy, af, tarea, cl, cd, 
      +                  qcd, resd)
 
       err = 0.0d0

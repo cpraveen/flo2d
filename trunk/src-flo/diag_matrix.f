@@ -1,13 +1,13 @@
 C------------------------------------------------------------------------------
 C Computes block diagonal elements using roe scheme
 C------------------------------------------------------------------------------
-      subroutine diag_matrix(edge, tedge, coord, qc, carea, dt)
+      subroutine diag_matrix(edge, tedge, coord, qc, tarea, dt)
       implicit none
       include 'param.h'
       include 'data.h'
       integer          edge(2,nemax), tedge(2,nemax)
       double precision coord(2,npmax), qc(nvar,ntmax),
-     +                 carea(ntmax), dt(ntmax)
+     +                 tarea(ntmax), dt(ntmax)
 
       integer          i, j, k, ie, e1, e2, c1, c2
       double precision dm(nvar,nvar), f1, f2
@@ -20,7 +20,7 @@ C     Initialize to identity
             do k=1,nvar
                dmat(j,k,i) = 0.0d0
             enddo
-            dmat(j,j,i) = carea(i)/dt(i)
+            dmat(j,j,i) = tarea(i)/dt(i)
          enddo
       enddo
 

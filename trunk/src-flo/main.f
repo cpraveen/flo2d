@@ -10,7 +10,7 @@ C------------------------------------------------------------------------------
      +                 ptype(npmax)
       double precision coord(2,npmax), qc(nvar,ntmax), 
      +                 qcold(nvar,ntmax), dt(ntmax), af(3,npmax),
-     +                 qv(nvar,npmax), carea(ntmax),
+     +                 qv(nvar,npmax), tarea(ntmax),
      +                 drmin(ntmax), res(nvar,ntmax), c1(nvar),
      +                 c2(nvar), c3(nvar)
       double precision cl, cd
@@ -22,20 +22,20 @@ C------------------------------------------------------------------------------
       call math
       call read_input
       call geometric(elem, edge, tedge, esue, vedge, spts, ptype,
-     +               bdedge, esubp, coord, drmin, carea, af)
+     +               bdedge, esubp, coord, drmin, tarea, af)
 
 C Set initial condition
       call initialize(qc, cl, cd)
 
 C For testing AD gradients
 c     call test_resd(elem, edge, tedge, vedge, spts, bdedge,
-c    +                 coord, qc, qv, qx, qy, af, carea, dt, cl, cd,
+c    +                 coord, qc, qv, qx, qy, af, tarea, dt, cl, cd,
 c    +                 res, qcd)
 c     call write_result(coord, elem, edge, qc, qv, cl, cd)
 c     stop
 
-c     call time_step2(edge, tedge, carea, coord, qc, dt)
-c     call jacobian(elem, esue, coord, carea, dt, qc)
+c     call time_step2(edge, tedge, tarea, coord, qc, dt)
+c     call jacobian(elem, esue, coord, tarea, dt, qc)
 c     stop
 
       iter = 0
@@ -43,14 +43,14 @@ c     stop
       call system('rm -f FLO.RES')
       do while(iter .lt. MAXITER .and. fres .gt. MINRES)
 c        call time_step(drmin, qc, dt)
-         call time_step2(edge, tedge, carea, coord, qc, dt)
+         call time_step2(edge, tedge, tarea, coord, qc, dt)
          call save_old(qc, qcold)
 
          do irk=1,nirk
 
 C           Compute finite volume residual
             call fvresidual(elem, edge, tedge, vedge, spts, bdedge,
-     +                      coord, qc, qv, qx, qy, af, carea, cl, cd, 
+     +                      coord, qc, qv, qx, qy, af, tarea, cl, cd, 
      +                      res)
 
 C           Update the solution
@@ -60,16 +60,16 @@ C           Update the solution
                   call prim2con(qc(1,i),    c2)
                   do j=1,nvar
                      c3(j) = airk(irk)*c1(j) + 
-     +                       birk(irk)*(c2(j)-dt(i)*res(j,i)/carea(i))
+     +                       birk(irk)*(c2(j)-dt(i)*res(j,i)/tarea(i))
                   enddo
                   call con2prim(c3, qc(1,i))
                enddo
             elseif(timemode .eq. 2)then
                call lusgs(elem, esue, edge, tedge, coord, qcold, qc, 
-     +                    res, dt, carea)
+     +                    res, dt, tarea)
             elseif(timemode .eq. 3)then
                call gmres(elem, esue, edge, tedge, vedge, spts, bdedge,
-     +                    coord, qc, qv, qx, qy, af, carea, dt, cl, cd,
+     +                    coord, qc, qv, qx, qy, af, tarea, dt, cl, cd,
      +                    res, qcd)
                do i=1,nt
                   call prim2con(qc(1,i),    c2)

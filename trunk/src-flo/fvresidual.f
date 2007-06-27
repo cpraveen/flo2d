@@ -2,14 +2,14 @@ C------------------------------------------------------------------------------
 C Computes finite volume residual
 C------------------------------------------------------------------------------
       subroutine fvresidual(elem, edge, tedge, vedge, spts, bdedge,
-     +                      coord, qc, qv, qx, qy, af, carea, cl, cd, 
+     +                      coord, qc, qv, qx, qy, af, tarea, cl, cd, 
      +                      res)
       implicit none
       include 'param.h'
       integer          elem(3,ntmax), edge(2,nemax), tedge(2,nemax),
      +                 vedge(2,nemax), spts(nspmax), bdedge(2,nbpmax)
       double precision coord(2,npmax), qc(nvar,ntmax), af(3,npmax),
-     +                 qv(nvar,npmax), carea(ntmax), res(nvar,ntmax)
+     +                 qv(nvar,npmax), tarea(ntmax), res(nvar,ntmax)
       double precision cl, cd
       double precision qx(3,npmax), qy(3,npmax)
 
@@ -22,7 +22,7 @@ C------------------------------------------------------------------------------
       enddo
 
 C     Compute area averaged value at vertices
-      call average(spts, elem, edge, bdedge, coord, carea, af, qc,
+      call average(spts, elem, edge, bdedge, coord, tarea, af, qc,
      +             qv)
 
 C     Compute flux for interior edges
