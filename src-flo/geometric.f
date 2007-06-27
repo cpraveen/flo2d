@@ -1,19 +1,19 @@
 C-----------------------------------------------------------------------------
-      subroutine geometric(elem, edge, edneigh, esue, vedge, spts, 
-     +                     ptype, bdedge, esubp, coord, drmin, elarea, 
-     +                     afact)
+      subroutine geometric(elem, edge, tedge, esue, vedge, spts, 
+     +                     ptype, bdedge, esubp, coord, drmin, tarea, 
+     +                     af)
       implicit none
       include 'param.h'
 
       integer          ptype(npmax), elem(3,ntmax),
      &                 esup1(mesup*npmax), esup2(npmax+1),
      &                 psup1(mpsup*npmax), psup2(npmax+1),
-     &                 edge(2,nemax), edneigh(2,nemax), spts(nspmax),
+     &                 edge(2,nemax), tedge(2,nemax), spts(nspmax),
      &                 opts(nopmax), bpts(nbpmax), fpts(nfpmax), 
      &                 vedge(2,nemax), esue(3,ntmax), bdedge(2,nbpmax),
      &                 esubp(mesubp,nbpmax)
-      double precision coord(2, npmax), elarea(ntmax), drmin(ntmax),
-     &                 afact(3,npmax)
+      double precision coord(2, npmax), tarea(ntmax), drmin(ntmax),
+     &                 af(3,npmax)
 
 c     Read grid from file
       call read_grid(coord, elem, ptype, spts, fpts, opts, bpts)
@@ -40,33 +40,33 @@ c     Put edge list in a particular order
       call order_edges(ptype, edge)
 
 c     Find element adjoining each edge
-      call el_surr_edge(esup1, esup2, elem, edge, edneigh, vedge)
+      call el_surr_edge(esup1, esup2, elem, edge, tedge, vedge)
 
 c For each solid wall point find two edges adjoining it
       call bdedges(spts, ptype, edge, bdedge)
 
 c     Element surrounding element
-      call el_surr_el(elem, edge, edneigh, ptype, esue)
+      call el_surr_el(elem, edge, tedge, ptype, esue)
 
 c     Smooth the grid using Laplacian smoothing
 c     call smooth(ptype, psup1, psup2, elem, esup1, esup2, coord)
       
       if(timemode .ne. 1)then
-         call renumber(elem, esue, edneigh, esubp)
+         call renumber(elem, esue, tedge, esubp)
       endif
 
 c     Calculate triangle areas
-      call tri_area(coord, elem, elarea)
+      call tri_area(coord, elem, tarea)
 
 c     Length scale for time-step calculation
-      call dtlength(coord, elarea, elem, drmin)
+      call dtlength(coord, tarea, elem, drmin)
 
 c     Write grid in gnuplot format for visualization
-      call write_grid(coord, edge, edneigh)
+      call write_grid(coord, edge, tedge)
 
 c     Area averaging factors
       call avgfact(ptype, elem, edge, bdedge, esubp, spts, coord, 
-     &             elarea, afact)
+     &             tarea, af)
 
       return
       end
@@ -295,11 +295,11 @@ C-----------------------------------------------------------------------------
 C-----------------------------------------------------------------------------
 C.....Calculate element and control volume areas for median cell
 C-----------------------------------------------------------------------------
-      subroutine tri_area(coord, elem, elarea)
+      subroutine tri_area(coord, elem, tarea)
       implicit none
       include 'param.h'
       integer          elem(3,ntmax)
-      double precision coord(2,npmax), elarea(ntmax)
+      double precision coord(2,npmax), tarea(ntmax)
 
       double precision dx1, dy1, dx2, dy2
       integer          i, n1, n2, n3
@@ -320,9 +320,9 @@ c Triangle area
          dx2= coord(1,n3) - coord(1,n1)
          dy2= coord(2,n3) - coord(2,n1)
 
-         elarea(i) = 0.5d0*( dx1*dy2 - dx2*dy1 )
-         maxelarea = dmax1(maxelarea, elarea(i))
-         minelarea = dmin1(minelarea, elarea(i))
+         tarea(i) = 0.5d0*( dx1*dy2 - dx2*dy1 )
+         maxelarea = dmax1(maxelarea, tarea(i))
+         minelarea = dmin1(minelarea, tarea(i))
 
       enddo
 
@@ -590,17 +590,17 @@ C-----------------------------------------------------------------------------
 C-----------------------------------------------------------------------------
 C.....For each edge find the elements to its right and left
 C-----------------------------------------------------------------------------
-      subroutine el_surr_edge(esup1, esup2, elem, edge, edneigh, vedge)
+      subroutine el_surr_edge(esup1, esup2, elem, edge, tedge, vedge)
       implicit none
       include 'param.h'
-      integer esup1(mesup*npmax), esup2(npmax+1), edneigh(2,nemax),
+      integer esup1(mesup*npmax), esup2(npmax+1), tedge(2,nemax),
      +        vedge(2,nemax), elem(3,ntmax), edge(2,nemax)
 
       integer i, jt, n1, n2, el, tmp
 
       do i=1,ne
-            edneigh(1,i) = 0
-            edneigh(2,i) = 0
+            tedge(1,i) = 0
+            tedge(2,i) = 0
             n1 = edge(1,i)
             n2 = edge(2,i)
             do jt=esup2(n1)+1, esup2(n1+1)
@@ -608,20 +608,20 @@ C-----------------------------------------------------------------------------
                   if( (n1.eq.elem(1,el) .and. n2.eq.elem(2,el)) .or.
      &                (n1.eq.elem(2,el) .and. n2.eq.elem(3,el)) .or.
      &                (n1.eq.elem(3,el) .and. n2.eq.elem(1,el)) )
-     &                  edneigh(1,i) = el
+     &                  tedge(1,i) = el
                   if( (n2.eq.elem(1,el) .and. n1.eq.elem(2,el)) .or.
      &                (n2.eq.elem(2,el) .and. n1.eq.elem(3,el)) .or.
      &                (n2.eq.elem(3,el) .and. n1.eq.elem(1,el)) )
-     &                  edneigh(2,i) = el
+     &                  tedge(2,i) = el
             enddo
 
-            if(edneigh(1,i) .eq. 0)then
-                  edneigh(1,i) = edneigh(2,i)
-                  edneigh(2,i) = 0
+            if(tedge(1,i) .eq. 0)then
+                  tedge(1,i) = tedge(2,i)
+                  tedge(2,i) = 0
                   tmp          = edge(1,i)
                   edge(1,i)    = edge(2,i)
                   edge(2,i)    = tmp
-                  if(edneigh(1,i) .eq. 0)then
+                  if(tedge(1,i) .eq. 0)then
                      print*,'Fatal: No edge neighbour'
                      stop
                   endif
@@ -635,8 +635,8 @@ C the edge. This is used for limited reconstruction of inviscid fluxes
          vedge(2,i) = 0
          n1 = edge(1,i)
          n2 = edge(2,i)
-         if(edneigh(1,i) .ne. 0)then
-            el = edneigh(1,i)
+         if(tedge(1,i) .ne. 0)then
+            el = tedge(1,i)
             if(elem(1,el) .ne. n1 .and. 
      +         elem(1,el) .ne. n2) vedge(1,i) = elem(1,el)
             if(elem(2,el) .ne. n1 .and. 
@@ -645,8 +645,8 @@ C the edge. This is used for limited reconstruction of inviscid fluxes
      +         elem(3,el) .ne. n2) vedge(1,i) = elem(3,el)
          endif
          
-         if(edneigh(2,i) .ne. 0)then
-            el = edneigh(2,i)
+         if(tedge(2,i) .ne. 0)then
+            el = tedge(2,i)
             if(elem(1,el) .ne. n1 .and. 
      +         elem(1,el) .ne. n2) vedge(2,i) = elem(1,el)
             if(elem(2,el) .ne. n1 .and. 
@@ -662,10 +662,10 @@ C the edge. This is used for limited reconstruction of inviscid fluxes
 C-----------------------------------------------------------------------------
 C Find triangles surrounding a triangle, ie, face neighbours
 C-----------------------------------------------------------------------------
-      subroutine el_surr_el(elem, edge, edneigh, ptype, esue)
+      subroutine el_surr_el(elem, edge, tedge, ptype, esue)
       implicit none
       include 'param.h'
-      integer elem(3,ntmax), edge(2,nemax), edneigh(2,nemax),
+      integer elem(3,ntmax), edge(2,nemax), tedge(2,nemax),
      +        ptype(npmax), esue(3,ntmax)
 
       integer it, ie, e1, e2, c1, c2, p1, p2, p3, q1, q2, q3
@@ -680,8 +680,8 @@ C-----------------------------------------------------------------------------
          e1 = edge(1,ie)
          e2 = edge(2,ie)
 
-         c1 = edneigh(1,ie)
-         c2 = edneigh(2,ie)
+         c1 = tedge(1,ie)
+         c2 = tedge(2,ie)
 
          p1 = elem(1,c1)
          p2 = elem(2,c1)
@@ -748,8 +748,8 @@ c     If triangle is on boundary, we give flag to identify the edge
          e1 = edge(1,ie)
          e2 = edge(2,ie)
 
-         c1 = edneigh(1,ie)
-         c2 = edneigh(2,ie)
+         c1 = tedge(1,ie)
+         c2 = tedge(2,ie)
          if    (p1 .eq. e1)then
             esue(1,c1) = -1
          elseif(p2 .eq. e1)then
@@ -768,10 +768,10 @@ c     If triangle is on boundary, we give flag to identify the edge
 C-----------------------------------------------------------------------------
 C Renumber cells for lusgs
 C-----------------------------------------------------------------------------
-      subroutine renumber(elem, esue, edneigh, esubp)
+      subroutine renumber(elem, esue, tedge, esubp)
       implicit none
       include 'size.h'
-      integer elem(3,ntmax), esue(3,ntmax), edneigh(2,nemax), 
+      integer elem(3,ntmax), esue(3,ntmax), tedge(2,nemax), 
      +        esubp(mesubp,nbpmax)
 
       integer oldnum(ntmax), newnum(ntmax), telem(3,ntmax), 
@@ -851,17 +851,17 @@ c Now rearrange some other element data structure
       enddo
 
       do i=1,ne
-         t1 = edneigh(1,i)
-         t2 = edneigh(2,i)
+         t1 = tedge(1,i)
+         t2 = tedge(2,i)
          if(t1 .gt. 0)then
-            edneigh(1,i) = newnum(t1)
+            tedge(1,i) = newnum(t1)
          else
-            edneigh(1,i) = t1
+            tedge(1,i) = t1
          endif
          if(t2 .gt. 0)then
-            edneigh(2,i) = newnum(t2)
+            tedge(2,i) = newnum(t2)
          else
-            edneigh(2,i) = t2
+            tedge(2,i) = t2
          endif
       enddo
 
@@ -880,11 +880,11 @@ C.....Calculate length used for time step
 C.....For each triangle find the minimum altitude, or
 C.....area/perimeter
 C-----------------------------------------------------------------------------
-      subroutine dtlength(coord, elarea, elem, drmin)
+      subroutine dtlength(coord, tarea, elem, drmin)
       implicit none
       include 'param.h'
       integer          elem(3,ntmax)
-      double precision coord(2,npmax), elarea(ntmax), drmin(ntmax)
+      double precision coord(2,npmax), tarea(ntmax), drmin(ntmax)
 
       integer          it, n1, n2, n3
       double precision dx1, dx2, dx3, dy1, dy2, dy3, dr1, dr2, dr3, 
@@ -899,20 +899,20 @@ C-----------------------------------------------------------------------------
          dx1 = coord(1,n2) - coord(1,n3)
          dy1 = coord(2,n2) - coord(2,n3)
          dr1 = dsqrt(dx1**2 + dy1**2)
-         h1  = 2.0d0*elarea(it)/dr1
+         h1  = 2.0d0*tarea(it)/dr1
 
          dx2 = coord(1,n3) - coord(1,n1)
          dy2 = coord(2,n3) - coord(2,n1)
          dr2 = dsqrt(dx2**2 + dy2**2)
-         h2  = 2.0d0*elarea(it)/dr2
+         h2  = 2.0d0*tarea(it)/dr2
 
          dx3 = coord(1,n1) - coord(1,n2)
          dy3 = coord(2,n1) - coord(2,n2)
          dr3 = dsqrt(dx3**2 + dy3**2)
-         h3  = 2.0d0*elarea(it)/dr3
+         h3  = 2.0d0*tarea(it)/dr3
 
          perim     = dr1 + dr2 + dr3
-         drmin(it) = elarea(it)/perim
+         drmin(it) = tarea(it)/perim
       enddo
 
       return
@@ -921,11 +921,11 @@ C-----------------------------------------------------------------------------
 C-----------------------------------------------------------------------------
 C Write grid into a file for visualization with gnuplot
 C-----------------------------------------------------------------------------
-      subroutine write_grid(coord, edge, edneigh)
+      subroutine write_grid(coord, edge, tedge)
       implicit none
       include 'param.h'
       double precision coord(2,npmax)
-      integer          edge(2,nemax), edneigh(2,nemax)
+      integer          edge(2,nemax), tedge(2,nemax)
 
       integer          gfile, i, n1, n2
 
@@ -934,7 +934,7 @@ c     Write boundary edges to BD.DAT
       do i=1,ne
       n1 = edge(1,i)
       n2 = edge(2,i)
-      if( edneigh(1,i)*edneigh(2,i) .eq. 0)then
+      if( tedge(1,i)*tedge(2,i) .eq. 0)then
          write(10,*)coord(1,n1), coord(2,n1)
          write(10,*)coord(1,n2), coord(2,n2)
          write(10,*)

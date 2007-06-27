@@ -2,14 +2,14 @@ C------------------------------------------------------------------------------
 C Computes: finite volume residual jacobian * given vector qcd
 C------------------------------------------------------------------------------
       subroutine fvresidual_q(elem, edge, tedge, vedge, spts, bdedge,
-     +                       coord, qc, qv, qx, qy, af, carea, cl, cd, 
+     +                       coord, qc, qv, qx, qy, af, tarea, cl, cd, 
      +                       qcd1, resd)
       implicit none
       include 'param.h'
       integer          elem(3,ntmax), edge(2,nemax), tedge(2,nemax),
      +                 vedge(2,nemax), spts(nspmax), bdedge(2,nbpmax)
       double precision coord(2,npmax), qc(nvar,ntmax), af(3,npmax),
-     +                 qv(nvar,npmax), carea(ntmax), resd(nvar,ntmax),
+     +                 qv(nvar,npmax), tarea(ntmax), resd(nvar,ntmax),
      +                 qcd1(nvar,ntmax)
       double precision cl, cd
       double precision qx(3,npmax), qy(3,npmax)
@@ -39,7 +39,7 @@ C     Transform conserved to primitive variables
       enddo
 
 C     Compute area averaged value at vertices
-      call average_q(spts, elem, edge, bdedge, coord, carea, af, qc,
+      call average_q(spts, elem, edge, bdedge, coord, tarea, af, qc,
      +               qcd, qv, qvd)
 
 C     Compute flux for interior edges
