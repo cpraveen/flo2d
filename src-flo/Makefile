@@ -11,6 +11,14 @@ TPND    = ${TAPENADE_HOME}/bin/tapenade \
 
 TARGETS = flo
 
+#Some colorful printing
+RED=\033[30;43m
+BLACK=\033[0m
+PRINT := $(shell \
+	[ -z `echo -e` ] && PRINT='echo -e' || PRINT='echo';\
+	echo $$PRINT;\
+	)
+
 #
 # program dependencies
 #
@@ -80,6 +88,15 @@ flo:  ${flo}
 
 .f.o:     ; ${FC} ${FFLAGS}                     -c $*.f
 .c.o:     ; ${CC} ${CFLAGS} -c $*.c
+
+##############################################################################
+# Print warning if forward diff code is older than original code
+##############################################################################
+average_q.f: average.f
+		@$(PRINT) "$(RED) WARNING: $@ is older than $< $(BLACK)"
+
+fvresidual_q.f: fvresidual.f
+		@$(PRINT) "$(RED) WARNING: $@ is older than $< $(BLACK)"
 
 #Flux subroutines: They must be named as somename_flux.F
 #Example: roe_flux.F

@@ -33,7 +33,7 @@ C------------------------------------------------------------------------------
       enddo
 
       if(iflow .eq. inviscid)then
-C Inviscid flow: kill normal velocity
+C        Inviscid flow: kill normal velocity
          do i=1,nsp
             j = spts(i)
             e1= bdedge(1,i)
@@ -45,7 +45,7 @@ C Inviscid flow: kill normal velocity
      +                       qv(1,j))
          enddo
       else
-C Viscous flow: zero velocity condition
+C        Viscous flow: zero velocity condition
          do i=1,nsp
             j = spts(i)
             qv(2,j) = 0.0d0
@@ -55,3 +55,4 @@ C Viscous flow: zero velocity condition
 
       return
       end
+
