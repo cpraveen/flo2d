@@ -13,6 +13,7 @@ TARGETS = flo
 
 #Some colorful printing
 RED=\033[30;43m
+GREEN=\033[30;42m
 BLACK=\033[0m
 PRINT := $(shell \
 	[ -z `echo -e` ] && PRINT='echo -e' || PRINT='echo';\
@@ -77,7 +78,7 @@ ALL:  $(TARGETS)
 flo:  ${flo}
 		${FC} -o flo ${flo} ${LIBS}
 		@${RM} -f *.msg *~
-		@echo "==> Built ${TOLIMIT} version of flo"
+		@$(PRINT) "==> Built $(GREEN)${TOLIMIT}$(BLACK) version of flo"
 
 #This is to prevent these files from being automatically deleted by make
 .SECONDARY: kfvs_flux_dq.f roe_flux_dq.f
