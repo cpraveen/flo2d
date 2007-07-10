@@ -43,44 +43,46 @@ C     Compute area averaged value at vertices
      +               qcd, qv, qvd)
 
 C     Compute flux for interior edges
-      if(iflux .eq. ikfvs) goto 10
-      if(iflux .eq. iroe ) goto 20
-      print*,'flux is not defined'
-      stop
+      select case(iflux)
 
-C     KFVS flux
-10    do ie=nin1,nin2
-         e1 = edge(1,ie)
-         e2 = edge(2,ie)
-         c1 = tedge(1,ie)
-         c2 = tedge(2,ie)
-         v1 = vedge(1,ie)
-         v2 = vedge(2,ie)
-         call kfvs_flux_dq(coord(1,e1), coord(1,e2),
-     +                     qc(1,c1), qcd(1,c1), qc(1,c2), qcd(1,c2),
-c    +                     qv(1,v1), qv(1,v2),
-     +                     qv(1,v1), qvd(1,v1), qv(1,v2), qvd(1,v2),
-     +                     resl, resd(1,c1), resr, resd(1,c2))
-      enddo
-      goto 100
+      case(ikfvs)
+         do ie=nin1,nin2
+            e1 = edge(1,ie)
+            e2 = edge(2,ie)
+            c1 = tedge(1,ie)
+            c2 = tedge(2,ie)
+            v1 = vedge(1,ie)
+            v2 = vedge(2,ie)
+            call kfvs_flux_dq(coord(1,e1), coord(1,e2),
+     +                        qc(1,c1), qcd(1,c1), qc(1,c2), qcd(1,c2),
+c    +                        qv(1,v1), qv(1,v2),
+     +                        qv(1,v1), qvd(1,v1), qv(1,v2), qvd(1,v2),
+     +                        resl, resd(1,c1), resr, resd(1,c2))
+         enddo
 
-C     Roe flux
-20    do ie=nin1,nin2
-         e1 = edge(1,ie)
-         e2 = edge(2,ie)
-         c1 = tedge(1,ie)
-         c2 = tedge(2,ie)
-         v1 = vedge(1,ie)
-         v2 = vedge(2,ie)
-         call  roe_flux_dq(coord(1,e1), coord(1,e2),
-     +                     qc(1,c1), qcd(1,c1), qc(1,c2), qcd(1,c2),
-c    +                     qv(1,v1), qv(1,v2),
-     +                     qv(1,v1), qvd(1,v1), qv(1,v2), qvd(1,v2),
-     +                     resl, resd(1,c1), resr, resd(1,c2))
-      enddo
+      case(iroe)
+         do ie=nin1,nin2
+            e1 = edge(1,ie)
+            e2 = edge(2,ie)
+            c1 = tedge(1,ie)
+            c2 = tedge(2,ie)
+            v1 = vedge(1,ie)
+            v2 = vedge(2,ie)
+            call  roe_flux_dq(coord(1,e1), coord(1,e2),
+     +                        qc(1,c1), qcd(1,c1), qc(1,c2), qcd(1,c2),
+c    +                        qv(1,v1), qv(1,v2),
+     +                        qv(1,v1), qvd(1,v1), qv(1,v2), qvd(1,v2),
+     +                        resl, resd(1,c1), resr, resd(1,c2))
+         enddo
+
+      case default
+         print*,'fvresidual: Unknown flux type ',iflux
+         stop
+
+      end select
 
 C     Compute flux for solid wall edges
-100   do ie=nsw1,nsw2
+      do ie=nsw1,nsw2
          e1 = edge(1,ie)
          e2 = edge(2,ie)
          c1 = tedge(1,ie)
@@ -109,3 +111,4 @@ c        call viscflux(edge, tedge, coord, qv, qx, qy, res)
 
       return
       end
+

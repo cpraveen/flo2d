@@ -26,40 +26,42 @@ C     Compute area averaged value at vertices
      +             qv)
 
 C     Compute flux for interior edges
-      if(iflux .eq. ikfvs) goto 10
-      if(iflux .eq. iroe ) goto 20
-      print*,'flux is not defined'
-      stop
+      select case(iflux)
 
-C     KFVS flux
-10    do ie=nin1,nin2
-         e1 = edge(1,ie)
-         e2 = edge(2,ie)
-         c1 = tedge(1,ie)
-         c2 = tedge(2,ie)
-         v1 = vedge(1,ie)
-         v2 = vedge(2,ie)
-         call kfvs_flux(coord(1,e1), coord(1,e2),
-     +                 qc(1,c1), qc(1,c2), qv(1,v1), qv(1,v2), 
-     +                 res(1,c1), res(1,c2))
-      enddo
-      goto 100
+      case(ikfvs)
+         do ie=nin1,nin2
+            e1 = edge(1,ie)
+            e2 = edge(2,ie)
+            c1 = tedge(1,ie)
+            c2 = tedge(2,ie)
+            v1 = vedge(1,ie)
+            v2 = vedge(2,ie)
+            call kfvs_flux(coord(1,e1), coord(1,e2),
+     +                     qc(1,c1), qc(1,c2), qv(1,v1), qv(1,v2), 
+     +                     res(1,c1), res(1,c2))
+            enddo
 
-C     Roe flux
-20    do ie=nin1,nin2
-         e1 = edge(1,ie)
-         e2 = edge(2,ie)
-         c1 = tedge(1,ie)
-         c2 = tedge(2,ie)
-         v1 = vedge(1,ie)
-         v2 = vedge(2,ie)
-         call roe_flux(coord(1,e1), coord(1,e2),
-     +                qc(1,c1), qc(1,c2), qv(1,v1), qv(1,v2), 
-     +                res(1,c1), res(1,c2))
-      enddo
+      case(iroe)
+         do ie=nin1,nin2
+            e1 = edge(1,ie)
+            e2 = edge(2,ie)
+            c1 = tedge(1,ie)
+            c2 = tedge(2,ie)
+            v1 = vedge(1,ie)
+            v2 = vedge(2,ie)
+            call roe_flux(coord(1,e1), coord(1,e2),
+     +                    qc(1,c1), qc(1,c2), qv(1,v1), qv(1,v2), 
+     +                    res(1,c1), res(1,c2))
+         enddo
 
-C Compute flux for solid wall edges
-100   do ie=nsw1,nsw2
+      case default
+         print*,'fvresidual: Unknown flux type ',iflux
+         stop
+
+      end select
+
+C     Compute flux for solid wall edges
+      do ie=nsw1,nsw2
          e1 = edge(1,ie)
          e2 = edge(2,ie)
          c1 = tedge(1,ie)
@@ -67,7 +69,7 @@ C Compute flux for solid wall edges
      +                   qc(1,c1), res(1,c1))       
       enddo
 
-C Flux for far-field points
+C     Flux for far-field points
       do ie=nff1,nff2
          e1 = edge(1,ie)
          e2 = edge(2,ie)
@@ -76,7 +78,7 @@ C Flux for far-field points
      +                      cl, cd, res(1,c1))
       enddo
 
-C Viscous terms
+C     Viscous terms
       if(iflow .ne. inviscid)then
          call gradient(elem, edge, bdedge, spts, coord, qc, qv, 
      +                 qx, qy)
