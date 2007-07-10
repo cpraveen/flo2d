@@ -5,9 +5,12 @@ include ../Makefile.in
 #
 FFLAGS   = ${CFLAGS}
 
+#Location of forward differentiated code
+SRCDIFF = .src-diff
+
 #Tapenade command
 TPND    = ${TAPENADE_HOME}/bin/tapenade \
-        -ext ${GenLib} -extAD ${ADLib} -d
+        -ext ${GenLib} -extAD ${ADLib} -d -O ${SRCDIFF}
 
 TARGETS = flo
 
@@ -51,14 +54,14 @@ fvm   =   geometric.o \
 
 impl  =   fvresidual_q.o \
           average_q.o \
-          vaverage_dq.o \
-          killnormvel_dq.o \
-          limit_dq.o \
-          kfvs_flux_dq.o \
-          roe_flux_dq.o  \
-          solid_flux_dq.o \
-          farfield_flux_dq.o \
-          con2prim_dq.o \
+          ${SRCDIFF}/vaverage_dq.o \
+          ${SRCDIFF}/killnormvel_dq.o \
+          ${SRCDIFF}/limit_dq.o \
+          ${SRCDIFF}/kfvs_flux_dq.o \
+          ${SRCDIFF}/roe_flux_dq.o  \
+          ${SRCDIFF}/solid_flux_dq.o \
+          ${SRCDIFF}/farfield_flux_dq.o \
+          ${SRCDIFF}/con2prim_dq.o \
           diag_matrix.o \
 			 flux_jacob.o \
 			 jacobian.o \
@@ -81,14 +84,17 @@ flo:  ${flo}
 		@$(PRINT) "==> Built $(GREEN)${TOLIMIT}$(BLACK) version of flo"
 
 #This is to prevent these files from being automatically deleted by make
-.SECONDARY: kfvs_flux_dq.f roe_flux_dq.f
+.SECONDARY: ${SRCDIFF}/kfvs_flux_dq.f ${SRCDIFF}/roe_flux_dq.f
 
 ##############################################################################
 # transformation rules
 ##############################################################################
 
-.f.o:     ; ${FC} ${FFLAGS}                     -c $*.f
+.f.o:     ; ${FC} ${FFLAGS} -c $*.f
 .c.o:     ; ${CC} ${CFLAGS} -c $*.c
+
+${SRCDIFF}/%.o: ${SRCDIFF}/%.f
+	cd ${SRCDIFF}; ${FC} ${FFLAGS} -c $*.f
 
 ##############################################################################
 # Print warning if forward diff code is older than original code
@@ -114,7 +120,7 @@ limit.o:  limit.F ../Makefile.in
 ##############################################################################
 # Forward derivatives for implicit shcheme
 ##############################################################################
-%_flux_dq.f:  %_flux.F
+${SRCDIFF}/%_flux_dq.f:  %_flux.F
 		${GCC} -E -C -P -DSECONDORDER $*_flux.F > $*_flux.f
 		${TPND} \
 		       -head       $*_flux                     \
@@ -126,7 +132,7 @@ limit.o:  limit.F ../Makefile.in
 
 #-----------------------------------------------------------------------------
 # Flux for solid edges
-solid_flux_dq.f:	solid_flux.f
+${SRCDIFF}/solid_flux_dq.f:	solid_flux.f
 		${TPND} \
 		       -head       solid_flux \
 		       -vars       "qc res"   \
@@ -136,7 +142,7 @@ solid_flux_dq.f:	solid_flux.f
 
 #-----------------------------------------------------------------------------
 # Flux for farfield face
-farfield_flux_dq.f: farfield_flux.F
+${SRCDIFF}/farfield_flux_dq.f: farfield_flux.F
 		${GCC} -E -C -P farfield_flux.F > farfield_flux.f
 		${TPND} \
 		       -head       farfield_flux \
@@ -148,7 +154,7 @@ farfield_flux_dq.f: farfield_flux.F
 
 #-----------------------------------------------------------------------------
 # Limiter function
-limit_dq.f:	limit.F ../Makefile.in
+${SRCDIFF}/limit_dq.f:	limit.F ../Makefile.in
 		${GCC} -D${TOLIMIT} -E -C -P limit.F > limit.f
 		${TPND} \
 		       -head       limit             \
@@ -160,7 +166,7 @@ limit_dq.f:	limit.F ../Makefile.in
 
 #-----------------------------------------------------------------------------
 # Vertex averaging
-vaverage_dq.f: vaverage.f
+${SRCDIFF}/vaverage_dq.f: vaverage.f
 		${TPND} \
 		       -head       vaverage         \
 		       -vars       "qc qv1 qv2 qv3" \
@@ -169,7 +175,7 @@ vaverage_dq.f: vaverage.f
 		        vaverage.f;
 
 #-----------------------------------------------------------------------------
-killnormvel_dq.f: killnormvel.f
+${SRCDIFF}/killnormvel_dq.f: killnormvel.f
 		${TPND} \
 		       -head       killnormvel \
 		       -vars       "qv"        \
@@ -178,7 +184,7 @@ killnormvel_dq.f: killnormvel.f
 		        killnormvel.f;
 
 #-----------------------------------------------------------------------------
-con2prim_dq.f: con2prim.f
+${SRCDIFF}/con2prim_dq.f: con2prim.f
 		${TPND} \
 		       -head       con2prim \
 		       -vars       "con"    \
@@ -194,4 +200,4 @@ clean:
 	${RM} -f *.o *.msg *~ $(TARGETS)
 
 allclean:	
-	${RM} -f *.o *.msg *~ *_dq.f $(TARGETS)
+	${RM} -f *.o $(TARGETS) $(SRCDIFF)/*
