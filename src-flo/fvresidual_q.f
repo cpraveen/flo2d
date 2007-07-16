@@ -32,7 +32,7 @@ C     Dummy residue variables
          resr(j) = 0.0d0
       enddo
 
-C     Transform conserved to primitive variables
+C     Transform conserved qcd1 to primitive variables qcd
       do i=1,nt
          call prim2con(qc(1,i), qcon)
          call con2prim_dq(qcon, qcd1(1,i), qpdummy, qcd(1,i))

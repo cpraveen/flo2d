@@ -93,7 +93,7 @@ C           Update the solution
          endif
 
          if(timemode.eq.3)then
-            cfl = dmax1(1.0d0, 1.0d0/fres)
+            cfl = dmax1(1.0d0, 10.0d0/fres)
 c           cfl = -2.0d0 + 3.0d0*iter
 c           cfl = 1.0d0*iter
             cfl = dmin1(cfl,20.0d0)
