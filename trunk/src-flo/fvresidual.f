@@ -51,6 +51,7 @@ C     Compute flux for interior edges
             v2 = vedge(2,ie)
             call roe_flux(coord(1,e1), coord(1,e2),
      +                    qc(1,c1), qc(1,c2), qv(1,v1), qv(1,v2), 
+c    +                    qv(1,e1), qv(1,e2), 
      +                    res(1,c1), res(1,c2))
          enddo
 
