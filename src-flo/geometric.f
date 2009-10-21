@@ -508,6 +508,14 @@ c Put edges into different arrays based on type
             nff = nff + 1
             ffedge(1,nff) = edge(1,i)
             ffedge(2,nff) = edge(2,i)
+         elseif(ptype(n1).eq.solid .and. ptype(n2).eq.farfield)then
+            nff = nff + 1
+            ffedge(1,nff) = edge(1,i)
+            ffedge(2,nff) = edge(2,i)
+         elseif(ptype(n1).eq.farfield .and. ptype(n2).eq.solid)then
+            nff = nff + 1
+            ffedge(1,nff) = edge(1,i)
+            ffedge(2,nff) = edge(2,i)
          else
             nin = nin + 1
             inedge(1,nin) = edge(1,i)
