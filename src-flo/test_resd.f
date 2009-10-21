@@ -21,10 +21,11 @@
       double precision resd(nvar,ntmax), res1(nvar,ntmax)
       double precision x, y, r, u, v, p, con(nvar), con1(nvar), r1, r2,
      +                 r3, r4, qc1(nvar,ntmax), fd, ad, eps, err
+      double precision rand
 
       do i=1,nt
          do j=1,nvar
-            qcd(j,i) = 0.1d0*(2.0d0*rand(0) - 1.0d0)
+            qcd(j,i) = 0.1d0*(2.0d0*rand(0.0d0) - 1.0d0)
          enddo
       enddo
 
