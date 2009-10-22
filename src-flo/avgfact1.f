@@ -39,45 +39,11 @@ C----------------------------------------------------------------------------
      +               saxy(v1), saxy(v2), saxy(v3))
       enddo
 
-C     New code not complete
-C     Add ghost cell contributions for solid wall points
-c     do i=nsw1,nsw2
-c        p1 = edge(1,i)
-c        p2 = edge(2,i)
-c        v1 = vedge(1,i)
-c        call afact2(coord(1,p1), coord(1,p2), coord(1,v1),
-c    +               sax(p1), say(p1), sax2(p1), say2(p1), saxy(p1),
-c    +               sax(p2), say(p2), sax2(p2), say2(p2), saxy(p2))
-c     enddo
-
-C     Add ghost cell contributions for solid wall points
-      do i=1,nsp
-         ip = spts(i)
-         e1 = bdedge(1,i)
-         e2 = bdedge(2,i)
-         p1 = edge(1,e1)
-         p2 = edge(2,e2)
-         nx(i) = 0.0d0
-         ny(i) = 0.0d0
-         call bd_normal(coord(1,p1), coord(1,ip), coord(1,p2), 
-     +                  nx(i), ny(i))
-         do j=1,esubp(1,i)
-            it = esubp(j+1,i)
-            v1 = elem(1,it)
-            v2 = elem(2,it)
-            v3 = elem(3,it)
-            call afact2(coord(1,v1), coord(1,v2), coord(1,v3),
-     +                  coord(1,ip), nx(i), ny(i), sax(ip), say(ip), 
-     +                  sax2(ip), say2(ip), saxy(ip))
-         enddo
-      enddo
-
 C     Compute weights by inverting least squares matrix
       do i=1,np
          call afact3(sax(i), say(i), sax2(i), say2(i), saxy(i),
      +               af(1,i))
-         if(ptype(i) .ne. interior .and. ptype(i) .ne. solid)then
-c        if(ptype(i) .ne. interior)then
+         if(ptype(i) .ne. interior)then
             af(1,i)= 0.0d0
             af(2,i)= 0.0d0
          endif

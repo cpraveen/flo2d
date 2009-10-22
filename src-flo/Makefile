@@ -9,7 +9,7 @@ FFLAGS   = ${CFLAGS}
 SRCDIFF = .src-diff
 
 #Tapenade command
-TPND    = ${TAPENADE_HOME}/bin/tapenade \
+TPND    = ${TAPENADE_HOME}/bin/tapenade -noinclude \
         -ext ${GenLib} -extAD ${ADLib} -d -O ${SRCDIFF}
 
 TARGETS = flo
@@ -43,6 +43,7 @@ fvm   =   geometric.o \
           hcusp_flux.o \
           limit.o \
           result.o \
+			 screen.o \
           clcd.o \
           avgfact1.o \
           avgfact2.o \
@@ -67,6 +68,7 @@ impl  =   fvresidual_q.o \
 			 jacobian.o \
           sparsekit.o \
           precond.o \
+			 dPackgmres.o \
           test_resd.o
 
 gmres =   gmres.o
@@ -108,27 +110,27 @@ fvresidual_q.f: fvresidual.f
 #Flux subroutines: They must be named as somename_flux.F
 #Example: roe_flux.F
 %_flux.o:  %_flux.F
-		${GCC} -DDEBUG -DSECONDORDER -E -C -P $*_flux.F > $*_flux.f
-		${FC} ${FFLAGS} -c $*_flux.f
-		${RM} -f $*_flux.f
+		${FC} -DDEBUG -DSECONDORDER -E -C -P $*_flux.F > preproc.f
+		${FC} ${FFLAGS} -c -o $*_flux.o preproc.f
+		${RM} -f preproc.f
 
 #Example: roe_flux.F
 limit.o:  limit.F ../Makefile.in
-		${GCC} -D${TOLIMIT} -E -C -P limit.F > limit.f
-		${FC} ${FFLAGS} -c limit.f
-		${RM} -f limit.f
+		${FC} -D${TOLIMIT} -E -C -P limit.F > preproc.f
+		${FC} ${FFLAGS} -c -o limit.o preproc.f
+		${RM} -f preproc.f
 ##############################################################################
 # Forward derivatives for implicit shcheme
 ##############################################################################
 ${SRCDIFF}/%_flux_dq.f:  %_flux.F
-		${GCC} -E -C -P -DSECONDORDER $*_flux.F > $*_flux.f
+		${FC} -E -C -P -DSECONDORDER $*_flux.F > preproc.f
 		${TPND} \
 		       -head       $*_flux                     \
 		       -vars       "qcl qcr qvl qvr resl resr" \
 		       -outvars    "resl resr"                 \
 		       -difffuncname "_dq"                     \
-		        $*_flux.f
-		${RM} -f $*_flux.f
+		        preproc.f
+		${RM} -f preproc.f
 
 #-----------------------------------------------------------------------------
 # Flux for solid edges
@@ -143,26 +145,26 @@ ${SRCDIFF}/solid_flux_dq.f:	solid_flux.f
 #-----------------------------------------------------------------------------
 # Flux for farfield face
 ${SRCDIFF}/farfield_flux_dq.f: farfield_flux.F
-		${GCC} -E -C -P farfield_flux.F > farfield_flux.f
+		${FC} -E -C -P farfield_flux.F > preproc.f
 		${TPND} \
 		       -head       farfield_flux \
 		       -vars       "qc res"      \
 		       -outvars    "res"         \
 		       -difffuncname "_dq"       \
-		        farfield_flux.f;
-		${RM} -f farfield_flux.f
+		        preproc.f
+		${RM} -f preproc.f
 
 #-----------------------------------------------------------------------------
 # Limiter function
 ${SRCDIFF}/limit_dq.f:	limit.F ../Makefile.in
-		${GCC} -D${TOLIMIT} -E -C -P limit.F > limit.f
+		${FC} -D${TOLIMIT} -E -C -P limit.F > preproc.f
 		${TPND} \
 		       -head       limit             \
 		       -vars       "dl dr"           \
 		       -outvars    "limit"           \
 		       -difffuncname "_dq"           \
-		        limit.f;
-		${RM} -f limit.f
+		        preproc.f
+		${RM} -f preproc.f
 
 #-----------------------------------------------------------------------------
 # Vertex averaging
@@ -191,6 +193,10 @@ ${SRCDIFF}/con2prim_dq.f: con2prim.f
 		       -outvars    "prim"   \
 		       -difffuncname "_dq"  \
 		        con2prim.f;
+
+##############################################################################
+dPackgmres.o: ../gmres/dPackgmres.f 
+	${FC} ${FFLAGS} -c $<
 
 ##############################################################################
 # clean things up

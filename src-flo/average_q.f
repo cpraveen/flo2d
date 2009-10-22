@@ -36,19 +36,7 @@ C------------------------------------------------------------------------------
          enddo
       enddo
 
-      if(iflow .eq. inviscid)then
-C        Inviscid flow: kill normal velocity
-         do i=1,nsp
-            j = spts(i)
-            e1= bdedge(1,i)
-            e2= bdedge(2,i)
-            v1= edge(1,e1)
-            v2= j
-            v3= edge(2,e2)
-            call killnormvel_dq(coord(1,v1), coord(1,v2), coord(1,v3), 
-     +                          qv(1,j), qvd(1,j))
-         enddo
-      else
+      if(iflow .ne. inviscid)then
 C        Viscous flow: zero velocity condition
          do i=1,nsp
             j = spts(i)

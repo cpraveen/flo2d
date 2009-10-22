@@ -50,7 +50,7 @@ C------------------------------------------------------------------------------
 9     format(70a)
       write(*,10)mach_inf,aoa_deg,Rey,CFL
 10    format(' Mach =',f6.3,', AOA =',f6.2, ', Rey = ',e10.4,
-     &       ', CFL =',e10.4)
+     &       ', CFL = ',e10.4)
       write(*,11)iflux,ilimit,gridfile
 11    format(' Flux =',i2, ',     Lim = ',i2,',    Grid= ',a30)
       write(*,9)('-',i=1,70)
