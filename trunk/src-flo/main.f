@@ -91,12 +91,17 @@ C           Update the solution
          if(mod(iter,saveinterval) .eq. 0)then
             call write_result(coord, elem, edge, qc, qv, cl, cd)
          endif
+         if(timemode.eq.3) call screen(qc, cl, cd)
+
+c        if(fres.lt.1.0d-3)then
+c           timemode = 3
+c        endif
 
          if(timemode.eq.3)then
-            cfl = dmax1(1.0d0, 10.0d0/fres)
-c           cfl = -2.0d0 + 3.0d0*iter
-c           cfl = 1.0d0*iter
-            cfl = dmin1(cfl,20.0d0)
+c           if(iter.gt.20) cfl = 1.0e20
+c           cfl = 1.0e20
+c           cfl = dmax1(1.0d0, 10.0d0/fres)
+            cfl = -2.0d0 + 3.0d0*iter
          endif
 
       enddo
