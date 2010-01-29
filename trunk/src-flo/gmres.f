@@ -91,7 +91,6 @@ c     icntl(8) = 1
         work(j) = ZERO
       enddo
 
-c     call diag_matrix(edge, tedge, coord, qc, tarea, dt)
       call jacobian(elem, esue, coord, tarea, dt, qc)
 
 *****************************************
