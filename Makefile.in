@@ -1,12 +1,10 @@
 #This requires a fairly recent version of make, preferably GNU's make.
-# gcc is also required for some pre-processing actions. 
-#The variables F77 and CC are assumed to be set to the fortran and C compilers. 
-#Otherwise set them here
-#F77=
-#CC=
+
+#Fortran compiler
+F77=ifort -diag_disable vec
 
 #Set your compiler optimization flags in this
-#CFLAGS=
+CFLAGS=-O3
 
 # Location of tapenade executable
 # TAPENADE_HOME must be defined, probably in your bashrc
@@ -14,28 +12,19 @@
 #TAPENADE_HOME=
 
 #To use or not: LIMITED or UNLIMITED
-#TOLIMIT = UNLIMITED
-TOLIMIT = LIMITED
+TOLIMIT = UNLIMITED
 
 #Libraries for gmres, linpack and blas
-LIBGMRES = ${HOME}/usr/local/lib/libgmres.a
-LIBLINP  = ${HOME}/usr/local/lib/liblinpack.a
-LIBBLAS  = ${HOME}/usr/local/lib/libblas.a
-LIBGMRES = /usr/local/lib/libgmres.a
-LIBLINP  = -llinpack
 LIBBLAS  = -lblas
-LIBS     = ${LIBGMRES} ${LIBLINP} ${LIBBLAS}
+LIBS     = ${LIBGMRES} ${LIBBLAS}
 
 ###############################################################################
 #Don't change anything below unless you really know what you are doing
 ###############################################################################
-
 #Some more tapenade related stuff
 TPDIR   = ../tapenade
 GenLib  = ${TPDIR}/MyGeneralLib
 ADLib   = ${TPDIR}/MyADLib
-ADSTACK = ${TPDIR}/adStack.c
-ADBUFFER= ${TPDIR}/adBuffer.f
 
 #
 # fortran flags
