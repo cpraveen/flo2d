@@ -63,11 +63,9 @@ impl  =   fvresidual_q.o \
           ${SRCDIFF}/solid_flux_dq.o \
           ${SRCDIFF}/farfield_flux_dq.o \
           ${SRCDIFF}/con2prim_dq.o \
-          diag_matrix.o \
 			 flux_jacob.o \
 			 jacobian.o \
           sparsekit.o \
-          precond.o \
 			 dPackgmres.o \
           test_resd.o
 
@@ -102,8 +100,6 @@ ${SRCDIFF}/%.o: ${SRCDIFF}/%.f
 # Print warning if forward diff code is older than original code
 ##############################################################################
 average_q.f: average.f
-		@$(PRINT) "$(RED) WARNING: $@ is older than $< $(BLACK)"
-
 fvresidual_q.f: fvresidual.f
 		@$(PRINT) "$(RED) WARNING: $@ is older than $< $(BLACK)"
 
