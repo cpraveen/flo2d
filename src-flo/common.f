@@ -50,6 +50,7 @@ C-----------------------------------------------------------------------------
       include 'param.h'
       integer inp, iargc, n, inpstatus
       character sdummy*32
+      character*24 flux_type
 
       n = iargc()
       if(n .eq. 0)then
@@ -75,7 +76,7 @@ C-----------------------------------------------------------------------------
       read(inp,*)sdummy, minres
       read(inp,*)sdummy, saveinterval
       read(inp,*)sdummy, niso
-      read(inp,*)sdummy, iflux
+      read(inp,*)sdummy, flux_type
       read(inp,*)sdummy, ILIMIT
       read(inp,*)sdummy, vortex, xref, yref
       read(inp,*)sdummy, display
@@ -97,11 +98,14 @@ C-----------------------------------------------------------------------------
          inpstatus = no
       endif
 
+      if(flux_type == 'roe')  iflux = iroe
+      if(flux_type == 'kfvs') iflux = ikfvs
       if(iflux .ne. iroe .and. iflux .ne. ikfvs)then
-         print*,'Unknown flux',iflux
-         print*,'Possible values: 1=roe, 2=kfvs'
+         print*,'Unknown flux ', flux_type
+         print*,'Possible values: roe, kfvs'
          inpstatus = no
       endif
+
 
       if(ilimit .ne. no .and. ilimit .ne. yes)then
          print*,'Unknown limiter option',ilimit
@@ -116,6 +120,13 @@ C-----------------------------------------------------------------------------
       endif
 
       if(inpstatus .eq. no) stop
+
+      open(10, file=gridfile, status="old")
+      rewind(10)
+      read(10,*) np, nt
+      write(*, '( " Number of points    :", i8)') np
+      write(*, '( " Number of triangles :", i8)') nt
+      close(10)
 
       return
       end
