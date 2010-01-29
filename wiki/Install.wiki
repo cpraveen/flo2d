@@ -4,7 +4,6 @@
 
   * Tapenade
   * GMRES library
-  * Linpack
   * BLAS
   * Fortran 90 compiler
 
