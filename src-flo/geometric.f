@@ -6,14 +6,16 @@ C-----------------------------------------------------------------------------
       include 'param.h'
 
       integer          ptype(npmax), elem(3,ntmax),
-     &                 esup1(mesup*npmax), esup2(npmax+1),
-     &                 psup1(mpsup*npmax), psup2(npmax+1),
      &                 edge(2,nemax), tedge(2,nemax), spts(nspmax),
-     &                 opts(nopmax), bpts(nbpmax), fpts(nfpmax), 
      &                 vedge(2,nemax), esue(3,ntmax), bdedge(2,nbpmax),
      &                 esubp(mesubp,nbpmax)
       double precision coord(2, npmax), tarea(ntmax), drmin(ntmax),
      &                 af(3,npmax)
+
+c     local variables
+      integer          esup1(mesup*npmax), esup2(npmax+1),
+     &                 psup1(mpsup*npmax), psup2(npmax+1),
+     &                 opts(nopmax), bpts(nbpmax), fpts(nfpmax)
 
 c     Read grid from file
       call read_grid(coord, elem, ptype, spts, fpts, opts, bpts)
