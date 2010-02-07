@@ -9,7 +9,7 @@
        set xran[-0.05:1.05]
        set nokey
 #      set bmargin 1
-       set title "Pressure/Friction coeffient" ,-1
+       set title "Pressure/Friction coeffient"
 #      set y2tics
        set ylabel '-Cp'
 #      set y2label 'Cf'
@@ -21,7 +21,7 @@
        set auto
        set nokey
        set logscale y
-       set title "Residue" ,-1
+       set title "Residue"
        plot 'FLO.RES' u 1:2 w l
        set nologscale y
 
@@ -34,7 +34,7 @@
        set noxtics
        set noytics
        set nokey
-       set title "Mach number" ,-1
+       set title "Mach number"
 #      set bmargin 1
        plot 'FLO.M' w l,'BD.DAT' w l lt 1 lw 2
 
@@ -48,7 +48,7 @@
        set noytics
        set nokey
 #      set bmargin 1
-       set title "Pressure" ,-1
+       set title "Pressure"
        plot 'FLO.P' w l,'BD.DAT' w l lt 1 lw 2
 
        unset multiplot
