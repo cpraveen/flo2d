@@ -31,6 +31,7 @@ HDR   = $(wildcard *.h)
 
 fvm   =   geometric.o \
           common.o \
+          read_input.o \
           con2prim.o \
           main.o \
           fvresidual.o \
