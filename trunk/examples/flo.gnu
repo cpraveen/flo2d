@@ -13,7 +13,7 @@
 #      set y2tics
        set ylabel '-Cp'
 #      set y2label 'Cf'
-       plot 'WALL.DAT' w lp lw 2 pt 6
+       plot 'WALL.DAT' u 1:3 w p lw 2 pt 6
 
        reset
        set size 0.5,0.5
