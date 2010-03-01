@@ -28,7 +28,7 @@ C     Write pressure coefficient
          p  = qv(4,is)
          cp = -(p - p_inf)/(0.5d0*r_inf*q_inf**2)
          ent= p/r**gamma/ent_inf - 1.0d0
-         write(10,'(3e16.6)') coord(1,is), coord(2,is), cp, ent
+         write(10,'(4e16.6)') coord(1,is), coord(2,is), cp, ent
       enddo
       close(10)
 
