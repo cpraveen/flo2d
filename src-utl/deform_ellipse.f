@@ -142,14 +142,13 @@ c        RBF deformation
 
 c     Write out new grid
       open(20, file="grid.fm")
-      write(20,*) np, nt
+      write(20,*) np, nt, nbe
       do i=1,np
          write(20,'(i8,2e24.15)') i, coord(:,i)
       enddo
       do i=1,nt
          write(20,*) i, elem(:,i)
       enddo
-      write(20,*) nbe
       do i=1,nbe
          write(20,*) i, bdedge(:,i), betype(i)
       enddo
