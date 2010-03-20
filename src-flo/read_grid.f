@@ -15,9 +15,10 @@ C-----------------------------------------------------------------------------
       ngrid = 10
       open(ngrid, file=gridfile, status="old")
       rewind(ngrid)
-      read(ngrid,*) np, nt
+      read(ngrid,*) np, nt, nbe
       write(*, '( " Number of points         :", i8)') np
       write(*, '( " Number of triangles      :", i8)') nt
+      write(*, '( " Number of boundary edges :", i8)') nbe
 
       do ip=1,np
          read(ngrid,*) i, coord(1,ip), coord(2,ip)
@@ -28,12 +29,6 @@ C-----------------------------------------------------------------------------
       enddo
 
 c     Read boundary edges
-      read(ngrid,*) nbe
-      write(*, '( " Number of boundary edges :", i8)') nbe
-      if(nbe.gt.nbemax)then
-         print*, 'Increase the size of nbemax'
-         stop
-      endif
       do i=1,nbe
          read(ngrid,*) j, bdedge(1,i), bdedge(2,i), betype(i)
       enddo
