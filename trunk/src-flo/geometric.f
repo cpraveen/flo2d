@@ -11,7 +11,7 @@ C-----------------------------------------------------------------------------
 
 c     local variables
       integer  :: esup1(mesup*np), esup2(np+1), psup1(mpsup*np), 
-     1            psup2(np+1), betype(nbemax)
+     1            psup2(np+1), betype(nbe)
 
 c     Read grid from file
       call read_grid(coord, elem, betype, bdedge)

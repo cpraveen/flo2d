@@ -80,10 +80,8 @@ C-----------------------------------------------------------------------------
 
       open(10, file=gridfile, status="old")
       rewind(10)
-      read(10,*) np, nt
+      read(10,*) np, nt, nbe
       close(10)
-      write(*, '( " Number of points    :", i8)') np
-      write(*, '( " Number of triangles :", i8)') nt
 
       ntmax = nt
       nemax = 3*np
