@@ -2,8 +2,8 @@
 **                 DRIVER FOR THE GMRes CODE
 *************************************************************************
       subroutine test_resd(elem, edge, tedge, vedge, spts,
-     +                 coord, qc, qv, qx, qy, af, tarea, dt, cl, cd,
-     +                 res, qcd)
+     +                 coord, qc, qv, qx, qy, af, tarea, varea, dt, 
+     +                 cl, cd, res, qcd)
       implicit none
       include 'size.h'
       include 'common.h'
@@ -12,7 +12,7 @@
       integer  :: elem(3,*), edge(2,*), tedge(2,*),
      +                 vedge(2,*), spts(*)
       real(dp) :: coord(2,*), qc(nvar,*), af(3,*),
-     +                 qv(nvar,*), tarea(*), res(nvar,*),
+     +                 qv(nvar,*), tarea(*), varea(*), res(nvar,*),
      +                 qcd(nvar,*), dt(*), qx(3,*),
      +                 qy(3,*), cl, cd
 
@@ -64,15 +64,15 @@ c        p = p_inf
       enddo
 
       call fvresidual(elem, edge, tedge, vedge, spts,
-     +                coord, qc, qv, qx, qy, af, tarea, cl, cd, 
+     +                coord, qc, qv, qx, qy, af, tarea, varea, cl, cd, 
      +                res)
 
       call fvresidual(elem, edge, tedge, vedge, spts,
-     +                coord, qc1, qv, qx, qy, af, tarea, cl, cd, 
+     +                coord, qc1, qv, qx, qy, af, tarea, varea, cl, cd, 
      +                res1)
 
       call fvresidual_q(elem, edge, tedge, vedge, spts,
-     +                  coord, qc, qv, qx, qy, af, tarea, cl, cd, 
+     +                  coord, qc, qv, qx, qy, af, tarea, varea, cl, cd,
      +                  qcd, resd)
 
       err = 0.0d0

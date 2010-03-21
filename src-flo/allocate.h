@@ -12,6 +12,7 @@
       allocate( af(3,np) )
       allocate( qv(nvar,np) )
       allocate( tarea(nt) )
+      allocate( varea(np) )
       allocate( drmin(nt) )
       allocate( res(nvar,nt) )
       allocate( qx(3,np) )

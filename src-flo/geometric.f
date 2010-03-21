@@ -1,12 +1,12 @@
 C-----------------------------------------------------------------------------
       subroutine geometric(elem, edge, tedge, esue, vedge, spts, 
-     +                     ptype, coord, drmin, tarea, af)
+     +                     ptype, coord, drmin, tarea, varea, af)
       implicit none
       include 'param.h'
 
       integer  :: ptype(*), elem(3,*), edge(2,*), tedge(2,*), spts(*),
      &            vedge(2,*), esue(3,*)
-      real(dp) :: coord(2,*), tarea(*), drmin(*), af(3,*)
+      real(dp) :: coord(2,*), tarea(*), varea(*), drmin(*), af(3,*)
 
 c     local variables
       integer  :: esup1(mesup*np), esup2(np+1), psup1(mpsup*np), 
@@ -48,7 +48,7 @@ c     Renumber triangles
       endif
 
 c     Calculate triangle areas
-      call tri_area(coord, elem, tarea)
+      call tri_area(coord, elem, tarea, varea)
 
 c     Length scale for time-step calculation
       call dtlength(coord, tarea, elem, drmin)
@@ -170,16 +170,20 @@ C-----------------------------------------------------------------------------
 C-----------------------------------------------------------------------------
 C.....Calculate element and control volume areas for median cell
 C-----------------------------------------------------------------------------
-      subroutine tri_area(coord, elem, tarea)
+      subroutine tri_area(coord, elem, tarea, varea)
       implicit none
       include 'param.h'
       integer  :: elem(3,*)
-      real(dp) :: coord(2,*), tarea(*)
+      real(dp) :: coord(2,*), tarea(*), varea(*)
 
       real(dp) :: dx1, dy1, dx2, dy2
       integer  :: i, n1, n2, n3
 
       write(*,'(" Finding triangle areas")')
+
+      do i=1,np
+         varea(i) = 0.0d0
+      enddo
 
       maxelarea = 0.0d0
       minelarea = 1.0d8
@@ -199,6 +203,14 @@ c Triangle area
          maxelarea = dmax1(maxelarea, tarea(i))
          minelarea = dmin1(minelarea, tarea(i))
 
+         varea(n1) = varea(n1) + tarea(i)
+         varea(n2) = varea(n2) + tarea(i)
+         varea(n3) = varea(n3) + tarea(i)
+
+      enddo
+
+      do i=1,np
+         varea(i) = varea(i)*4.0d0/9.0d0
       enddo
 
       write(*,'(2x,"Minimum triangle area    =",e12.4)')minelarea
