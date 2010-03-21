@@ -1,17 +1,16 @@
 C-----------------------------------------------------------------------------
       subroutine geometric(elem, edge, tedge, esue, vedge, spts, 
-     +                     ptype, bdedge, coord, drmin, tarea, 
-     +                     af)
+     +                     ptype, coord, drmin, tarea, af)
       implicit none
       include 'param.h'
 
       integer  :: ptype(*), elem(3,*), edge(2,*), tedge(2,*), spts(*),
-     &            vedge(2,*), esue(3,*), bdedge(2,*)
+     &            vedge(2,*), esue(3,*)
       real(dp) :: coord(2,*), tarea(*), drmin(*), af(3,*)
 
 c     local variables
       integer  :: esup1(mesup*np), esup2(np+1), psup1(mpsup*np), 
-     1            psup2(np+1), betype(nbe)
+     1            psup2(np+1), betype(nbe), bdedge(2,nbe)
 
 c     Read grid from file
       call read_grid(coord, elem, betype, bdedge)

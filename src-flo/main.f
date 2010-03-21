@@ -12,7 +12,7 @@ C------------------------------------------------------------------------------
       real(dp),allocatable, dimension(:,:) :: coord, qc, qcold, af,
      1                                        qv, res, qx, qy, qcd
 
-      integer  ::  spts(nspmax), bdedge(2,nbpmax)
+      integer  ::  spts(nspmax)
       real(dp) :: c1(nvar), c2(nvar), c3(nvar)
       real(dp) :: cl, cd
       real     :: etime, elapsed(2), totaltime
@@ -30,13 +30,13 @@ c     Allocate memory for variables
 
 c     Geometry preprocessor
       call geometric(elem, edge, tedge, esue, vedge, spts, ptype,
-     +               bdedge, coord, drmin, tarea, af)
+     +               coord, drmin, tarea, af)
 
 C Set initial condition
       call initialize(qc, cl, cd)
 
 C For testing AD gradients
-c     call test_resd(elem, edge, tedge, vedge, spts, bdedge,
+c     call test_resd(elem, edge, tedge, vedge, spts,
 c    +                 coord, qc, qv, qx, qy, af, tarea, dt, cl, cd,
 c    +                 res, qcd)
 c     call write_result(coord, elem, edge, qc, qv, cl, cd)
@@ -57,7 +57,7 @@ c        call time_step(drmin, qc, dt)
          do irk=1,nirk
 
 C           Compute finite volume residual
-            call fvresidual(elem, edge, tedge, vedge, spts, bdedge,
+            call fvresidual(elem, edge, tedge, vedge, spts,
      +                      coord, qc, qv, qx, qy, af, tarea, cl, cd, 
      +                      res)
 
@@ -76,7 +76,7 @@ C           Update the solution
                call lusgs(elem, esue, edge, tedge, coord, qcold, qc, 
      +                    res, dt, tarea)
             elseif(timemode .eq. 3)then
-               call gmres(elem, esue, edge, tedge, vedge, spts, bdedge,
+               call gmres(elem, esue, edge, tedge, vedge, spts,
      +                    coord, qc, qv, qx, qy, af, tarea, dt, cl, cd,
      +                    res, qcd)
                do i=1,nt

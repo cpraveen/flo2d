@@ -2,11 +2,10 @@ C------------------------------------------------------------------------------
 C Compute gradients at vertices used for viscous flux
 C qx(1,.) = u_x, qx(2,.) = v_x, qx(3,.) = (pressure/density/(gamma-1))_x
 C------------------------------------------------------------------------------
-      subroutine gradient(elem, edge, bdedge, spts, coord, qc, qv, 
-     +                    qx, qy)
+      subroutine gradient(elem, edge, spts, coord, qc, qv, qx, qy)
       implicit none
       include 'param.h'
-      integer  :: elem(3,*), edge(2,*), bdedge(2,*), spts(*)
+      integer  :: elem(3,*), edge(2,*), spts(*)
       real(dp) :: coord(2,*), qc(nvar,*), qv(nvar,*), qx(3,*),
      1            qy(3,*)
 
@@ -60,23 +59,6 @@ C Divide by the area
          qy(1,i) = qy(1,i)*fact
          qy(2,i) = qy(2,i)*fact
          qy(3,i) = qy(3,i)*fact
-      enddo
-
-C Adiabatic bc: T_x * n_x + T_y * n_y = 0
-      do i=1,nsp
-         j = spts(i)
-         e1= bdedge(1,i)
-         e2= bdedge(2,i)
-         v1= edge(1,e1)
-         v2= j
-         v3= edge(2,e2)
-         qtemp(1) = 0.0d0
-         qtemp(2) = qx(3,j)
-         qtemp(3) = qy(3,j)
-         qtemp(4) = 0.0d0
-         call killnormvel(coord(1,v1), coord(1,v2), coord(1,v3), qtemp)
-         qx(3,j) = qtemp(2)
-         qy(3,j) = qtemp(3)
       enddo
 
       end

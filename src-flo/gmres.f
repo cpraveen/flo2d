@@ -1,7 +1,7 @@
 *************************************************************************
 **                 DRIVER FOR THE GMRes CODE
 *************************************************************************
-      subroutine gmres(elem, esue, edge, tedge, vedge, spts, bdedge,
+      subroutine gmres(elem, esue, edge, tedge, vedge, spts,
      +                 coord, qc, qv, qx, qy, af, tarea, dt, cl, cd,
      +                 res, qcd)
       implicit none
@@ -9,7 +9,7 @@
       include 'gmres.h'
 
       integer  :: elem(3,*), esue(3,*), edge(2,*), tedge(2,*), 
-     1            vedge(2,*), spts(*), bdedge(2,*)
+     1            vedge(2,*), spts(*)
       real(dp) :: coord(2,*), qc(nvar,*), af(3,*), qv(nvar,*), tarea(*),
      1            res(nvar,*), qcd(nvar,*), dt(*), qx(3,*), qy(3,*),
      2            cl, cd
@@ -114,7 +114,7 @@ c        work(colz) <-- A * work(colx)
                icount   = icount + 1
             enddo
          enddo
-         call fvresidual_q(elem, edge, tedge, vedge, spts, bdedge,
+         call fvresidual_q(elem, edge, tedge, vedge, spts,
      +                     coord, qc, qv, qx, qy, af, tarea, cl, cd, 
      +                     qcd, resd)
          icount = 0
