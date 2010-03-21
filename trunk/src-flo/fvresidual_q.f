@@ -2,13 +2,13 @@ C------------------------------------------------------------------------------
 C Computes: finite volume residual jacobian * given vector qcd
 C------------------------------------------------------------------------------
       subroutine fvresidual_q(elem, edge, tedge, vedge, spts,
-     +                       coord, qc, qv, qx, qy, af, tarea, cl, cd, 
-     +                       qcd1, resd)
+     +                       coord, qc, qv, qx, qy, af, tarea, varea,
+     +                       cl, cd, qcd1, resd)
       implicit none
       include 'param.h'
       integer  :: elem(3,*), edge(2,*), tedge(2,*), vedge(2,*), spts(*)
       real(dp) :: coord(2,*), qc(nvar,*), af(3,*), qv(nvar,*), tarea(*),
-     1            resd(nvar,*), qcd1(nvar,*)
+     1            varea(*), resd(nvar,*), qcd1(nvar,*)
       real(dp) :: cl, cd
       real(dp) :: qx(3,*), qy(3,*)
 
@@ -100,7 +100,7 @@ C     Flux for far-field points
 C     TO BE CONTINUED
 C     Viscous terms
       if(iflow .ne. inviscid)then
-c        call gradient(elem, edge, spts, coord, qc, qv, 
+c        call gradient(elem, edge, spts, coord, varea, qc, qv, 
 c    +                 qx, qy)
 c        call viscflux(edge, tedge, coord, qv, qx, qy, res)
          print*,'fvresidual_q: viscous not implemented yet'

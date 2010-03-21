@@ -4,10 +4,10 @@ C------------------------------------------------------------------------------
       subroutine gradbnd(x1, x2, qv1, qv2, qx1, qx2, qy1, qy2)
       implicit none
       include 'common.h'
-      real(dp) :: x1(2), x2(2), qv1(nvar), qv2(nvar), qx1(3),
+      real*8   :: x1(2), x2(2), qv1(nvar), qv2(nvar), qx1(3),
      +            qx2(3), qy1(3), qy2(3)
 
-      real(dp) :: dx, dy, u1, v1, u2, v2, T1, T2, const
+      real*8   :: dx, dy, u1, v1, u2, v2, T1, T2, const
 
       const  = 1.0d0/9.0d0
 

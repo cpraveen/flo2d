@@ -8,7 +8,7 @@ C------------------------------------------------------------------------------
       integer, allocatable, dimension(:)   :: ptype
       integer, allocatable, dimension(:,:) :: elem, esue, edge, tedge,
      1                                        vedge
-      real(dp),allocatable, dimension(:)   :: dt, drmin, tarea
+      real(dp),allocatable, dimension(:)   :: dt, drmin, tarea, varea
       real(dp),allocatable, dimension(:,:) :: coord, qc, qcold, af,
      1                                        qv, res, qx, qy, qcd
 
@@ -30,14 +30,14 @@ c     Allocate memory for variables
 
 c     Geometry preprocessor
       call geometric(elem, edge, tedge, esue, vedge, spts, ptype,
-     +               coord, drmin, tarea, af)
+     +               coord, drmin, tarea, varea, af)
 
 C Set initial condition
       call initialize(qc, cl, cd)
 
 C For testing AD gradients
-c     call test_resd(elem, edge, tedge, vedge, spts,
-c    +                 coord, qc, qv, qx, qy, af, tarea, dt, cl, cd,
+c     call test_resd(elem, edge, tedge, vedge, spts, coord,
+c    +                 qc, qv, qx, qy, af, tarea, varea, dt, cl, cd,
 c    +                 res, qcd)
 c     call write_result(coord, elem, edge, qc, qv, cl, cd)
 c     stop
@@ -58,8 +58,8 @@ c        call time_step(drmin, qc, dt)
 
 C           Compute finite volume residual
             call fvresidual(elem, edge, tedge, vedge, spts,
-     +                      coord, qc, qv, qx, qy, af, tarea, cl, cd, 
-     +                      res)
+     +                      coord, qc, qv, qx, qy, af, tarea, varea,
+     +                      cl, cd, res)
 
 C           Update the solution
             if(timemode .eq. 1)then
@@ -77,8 +77,8 @@ C           Update the solution
      +                    res, dt, tarea)
             elseif(timemode .eq. 3)then
                call gmres(elem, esue, edge, tedge, vedge, spts,
-     +                    coord, qc, qv, qx, qy, af, tarea, dt, cl, cd,
-     +                    res, qcd)
+     +                    coord, qc, qv, qx, qy, af, tarea, varea, dt, 
+     +                    cl, cd, res, qcd)
                do i=1,nt
                   call prim2con(qc(1,i),    c2)
                   do j=1,nvar
