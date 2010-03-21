@@ -53,7 +53,11 @@ fvm   =   geometric.o \
           lusgs.o \
           smooth.o \
           gradient.o \
+          gradint.o \
+          gradbnd.o \
           visc.o \
+          viscres.o \
+          viscres_adiabatic.o \
           sutherland.o \
           read_grid.o \
           pres_match.o
