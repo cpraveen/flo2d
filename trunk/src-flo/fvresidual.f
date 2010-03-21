@@ -1,13 +1,13 @@
 C------------------------------------------------------------------------------
 C Computes finite volume residual
 C------------------------------------------------------------------------------
-      subroutine fvresidual(elem, edge, tedge, vedge, spts, bdedge,
+      subroutine fvresidual(elem, edge, tedge, vedge, spts,
      +                      coord, qc, qv, qx, qy, af, tarea, cl, cd, 
      +                      res)
       implicit none
       include 'param.h'
       integer  :: elem(3,*), edge(2,*), tedge(2,*), vedge(2,*), 
-     1            spts(*), bdedge(2,*)
+     1            spts(*)
       real(dp) :: coord(2,*), qc(nvar,*), af(3,*), qv(nvar,*), 
      1            tarea(*), res(nvar,*)
       real(dp) :: cl, cd
@@ -80,7 +80,7 @@ C     Flux for far-field points
 
 C     Viscous terms
       if(iflow .ne. inviscid)then
-         call gradient(elem, edge, bdedge, spts, coord, qc, qv, 
+         call gradient(elem, edge, spts, coord, qc, qv, 
      +                 qx, qy)
          call viscflux(edge, tedge, coord, qv, qx, qy, res)
       endif
