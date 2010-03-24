@@ -19,8 +19,6 @@
       allocate( coord(2,np) )
       allocate( elem(3,nt) )
 
-      gridfile = 'grid.0'
-
 c     Number of points on first,second,third ellipese, and on outer
       n1   = 200
       n2   = 400
@@ -45,9 +43,8 @@ c     Semi-major/minor axes of first and third ellipse
       out_nend = out_nbeg + nout - 1
 
 c     Read design variables
-      open(10, file="vdes.dat", status="old")
-      read(10,*) x1, y1, alpha1
-      read(10,*) x3, y3, alpha3
+      open(10, file="control.dat", status="old")
+      read(10,*) x1, y1, alpha1, x3, y3, alpha3
       close(10)
 
       write(*,*) x1, y1, alpha1
@@ -141,6 +138,7 @@ c        RBF deformation
       enddo
 
 c     Write out new grid
+      print*,'Overwriting grid file grid.fm'
       open(20, file="grid.fm")
       write(20,*) np, nt, nbe
       do i=1,np
