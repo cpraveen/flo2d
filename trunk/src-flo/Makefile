@@ -9,10 +9,12 @@ FFLAGS   = ${CFLAGS} -free -Tf
 SRCDIFF = .src-diff
 
 #Tapenade command
-TPND    = ${TAPENADE_HOME}/bin/tapenade -noinclude \
-        -ext ${GenLib} -extAD ${ADLib} -d
+TPN     = ${TAPENADE_HOME}/bin/tapenade -noinclude \
+        -ext ${GenLib} -extAD ${ADLib}
+TPNDQ   = $(TPN) -d -difffuncname "_dq"
+TPNBQ   = $(TPN) -b -difffuncname "_bq"
 
-TARGETS = flo2d
+TARGETS = flo2d adj2d
 
 #Some colorful printing
 RED=\033[30;43m
@@ -65,9 +67,10 @@ impl  =   flux_jacob.o \
 			 dPackgmres.o \
 			 fvresidual_dq.o \
 			 con2prim_dq.o \
+			 gmres.o \
           test_resd.o
 
-FVRESIDUAL_DQ = fvresidual.f95 \
+FVRESIDUAL_Q =  fvresidual.f95 \
 					 roe_flux_preproc.f95 \
 					 kfvs_flux_preproc.f95 \
 					 farfield_flux_preproc.f95 \
@@ -81,9 +84,27 @@ FVRESIDUAL_DQ = fvresidual.f95 \
 					 vaverage.f95 \
 					 sutherland.f95
 
-gmres =   gmres.o
+COSTFUN_Q = costfun.f95 \
+            clcd.f95 \
+				average.f95 \
+				vaverage.f95 \
+				gradient.f95 \
 
-flo2d =   ${fvm} ${impl} ${gmres}
+adj = adj2d.o \
+		sutherland.o \
+		limit.o \
+		gradient.o \
+		average.o \
+		vaverage.o \
+      fvresidual_bq.o \
+      costfun_bq.o \
+		clcd_bq.o \
+      adStack.o \
+      adBuffer.o
+
+flo2d =   ${fvm} ${impl}
+
+adj2d =   ${adj}
 #
 # programs
 #
@@ -94,6 +115,11 @@ flo2d:  ${flo2d}
 		${FC} -o flo2d ${flo2d} ${LIBS}
 		@${RM} -f *.msg *~
 		@$(PRINT) "==> Built $(GREEN)${TOLIMIT}$(BLACK) version of flo2d"
+
+adj2d:  ${adj2d}
+		${FC} -o adj2d ${adj2d} ${LIBS}
+		@${RM} -f *.msg *~
+		@$(PRINT) "==> Built $(GREEN)${TOLIMIT}$(BLACK) version of adj2d"
 
 #This is to prevent these files from being automatically deleted by make
 .SECONDARY: ${SRCDIFF}/kfvs_flux_dq.f ${SRCDIFF}/roe_flux_dq.f
@@ -122,23 +148,36 @@ limit_preproc.f95:  limit.f95 ../Makefile.in $(HDR)
 ##############################################################################
 # Forward derivatives for implicit shcheme
 ##############################################################################
-fvresidual_dq.f95: $(FVRESIDUAL_DQ) $(HDR)
-	$(TPND) \
-		-head fvresidual    \
-		-vars "qc qv qx qy res" \
+fvresidual_dq.f95: $(FVRESIDUAL_Q) $(HDR)
+	$(TPNDQ) \
+		-head    fvresidual    \
+		-vars    "qc qv qx qy res" \
 		-outvars "qv qx qy res"      \
-		-difffuncname "_dq" \
-		-o fvresidual       \
-		$(FVRESIDUAL_DQ)
+		-o       fvresidual       \
+		$(FVRESIDUAL_Q)
 
 con2prim_dq.o: con2prim.f95 $(HDR)
-	$(TPND) \
-		-head con2prim      \
-		-vars "con" \
+	$(TPNDQ) \
+		-head    con2prim      \
+		-vars    "con" \
 		-outvars "prim"      \
-		-difffuncname "_dq" \
 		con2prim.f95
 	${FC} -c ${FFLAGS} $*.f95
+##############################################################################
+fvresidual_bq.f95: $(FVRESIDUAL_Q) $(HDR)
+	$(TPNBQ) \
+		-head    fvresidual    \
+		-vars    "qc qv qx qy res" \
+		-outvars "qc qv qx qy res"      \
+		-o       fvresidual       \
+		$(FVRESIDUAL_Q)
+##############################################################################
+costfun_bq.f95: $(COSTFUN_Q) $(HDR)
+	$(TPNBQ) \
+		-head    costfun            \
+		-vars    "qc qv qx qy cost" \
+		-outvars "qc qv qx qy cost" \
+		$(COSTFUN_Q)
 ##############################################################################
 dPackgmres.o: ../gmres/dPackgmres.f 
 	${FC} -c -O3 $<
@@ -150,6 +189,12 @@ sparsekit.o: sparsekit.f
 		${FC} -c ${FFLAGS} $*.f95
 
 ##############################################################################
+adBuffer.o: $(TAPENADE_HOME)/ADFirstAidKit/adBuffer.f
+	$(FC) -c $<
+
+adStack.o: $(TAPENADE_HOME)/ADFirstAidKit/adStack.c
+	$(CC) -c $<
+
 ##############################################################################
 # clean things up
 ##############################################################################
@@ -158,7 +203,12 @@ info:
 		@$(PRINT) "==> Built $(GREEN)${TOLIMIT}$(BLACK) version of flo2d"
 
 clean:	
-	${RM} -f *.o *_dq.f95 *_preproc.f95 preproc.f95 *.msg *~ $(TARGETS)
+	${RM} -f *.o 
+	${RM} -f *_dq.f95
+	${RM} -f *_bq.f95
+	${RM} -f *_preproc.f95
+	${RM} -f preproc.f95
+	${RM} -f *.msg *~ $(TARGETS)
 
 allclean:	
 	${RM} -f *_dq.f95

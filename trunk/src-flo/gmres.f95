@@ -3,7 +3,7 @@
 !************************************************************************
       subroutine gmres(elem, esue, edge, tedge, vedge, spts, &
                        coord, qc, qcd, qv, qvd, qx, qxd, qy, qyd, &
-                       af, tarea, varea, dt, cl, cd, res)
+                       af, tarea, varea, dt, cl, cd, res, resd)
       implicit none
       include 'param.h'
       include 'gmres.h'
@@ -11,7 +11,7 @@
       integer  :: elem(3,*), esue(3,*), edge(2,*), tedge(2,*),  &
                   vedge(2,*), spts(*)
       real(dp) :: coord(2,*), qc(nvar,*), af(3,*), qv(nvar,*), tarea(*), &
-                  varea(*), res(nvar,*), qcd(nvar,*), dt(*), &
+                  varea(*), res(nvar,*), resd(nvar,*), qcd(nvar,*), dt(*), &
                   qx(3,*), qy(3,*), qxd(3,*), qyd(3,*), cl, cd, &
                   qvd(nvar,*)
 
@@ -31,7 +31,7 @@
 
       real(dp), parameter :: ZERO = 0.0d0, ONE = 1.0d0
 
-      real(dp) :: resd(nvar,nt), con(nvar), cond(nvar), rdummy(nvar)
+      real(dp) :: con(nvar), cond(nvar), rdummy(nvar)
 
       lda    = nvar*nt
       ldstrt = 20

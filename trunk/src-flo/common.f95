@@ -263,9 +263,16 @@
 
       dtglobal = 1.0d20
       do i=1,nt
-         dt(i)    = cfl*tarea(i)/sumspeed(i)
-         dtglobal = min(dtglobal, dt(i))
+         dt(i)    = cfl*tarea(i)/sumspeed(i) ! local  timestep
+         dtglobal = min(dtglobal, dt(i))     ! global timestep
       enddo
+
+      ! TESTING ONLYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+      if(timemode .eq. 3)then
+         do i=1,nt
+            dt(i)    = dtglobal
+         enddo
+      endif
 
       end
 !-----------------------------------------------------------------------------

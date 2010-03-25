@@ -16,6 +16,7 @@
       allocate( varea(np) )
       allocate( drmin(nt) )
       allocate( res(nvar,nt) )
+      allocate( resd(nvar,nt) )
       allocate( qx(3,np) )
       allocate( qy(3,np) )
       allocate( qxd(3,np) )
