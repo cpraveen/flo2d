@@ -10,8 +10,9 @@
                                               vedge
       real(dp),allocatable, dimension(:)   :: dt, drmin, tarea, varea
       real(dp),allocatable, dimension(:,:) :: coord, qc, qcold, af, &
-                                              qv, res, qx, qy, qcd, &
-                                              qvd, qxd, qyd
+                                              qv, res, qx, qy
+      real(dp),allocatable, dimension(:,:) :: qcd, qvd, qxd, qyd, resd
+
       ! Arrays for gmres                                        
       integer,target,allocatable,dimension(:)  :: a_ja, a_ia, a_jlu, &
                                                   a_ju, a_levs, a_jw
@@ -84,8 +85,7 @@
             elseif(timemode .eq. 3)then
                call gmres(elem, esue, edge, tedge, vedge, spts, &
                           coord, qc, qcd, qv, qvd, qx, qxd, qy, qyd, &
-                          af, tarea, varea, dt, &
-                          cl, cd, res)
+                          af, tarea, varea, dt, cl, cd, res, resd)
                do i=1,nt
                   call prim2con(qc(1,i),    c2)
                   do j=1,nvar
@@ -116,7 +116,7 @@
             !if(iter.gt.20) cfl = 1.0e20 ! for transonic
             !cfl = max(1.0d0, 10.0d0/fres)
             !cfl = -2.0d0 + 3.0d0*iter
-            cfl = 1.1d0*cfl*fres_old/fres
+            cfl = 1.2d0*cfl*fres_old/fres
          endif
 
       enddo
