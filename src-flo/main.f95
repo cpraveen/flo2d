@@ -69,7 +69,7 @@
                             cl, cd, res)
 
 !           Update the solution
-            if(timemode .eq. 1)then
+            if(timemode == 'rk3')then
                do i=1,nt
                   call prim2con(qcold(1,i), c1)
                   call prim2con(qc(1,i),    c2)
@@ -79,10 +79,10 @@
                   enddo
                   call con2prim(c3, qc(1,i))
                enddo
-            elseif(timemode .eq. 2)then
+            elseif(timemode == 'lusgs')then
                call lusgs(elem, esue, edge, tedge, coord, qcold, qc, &
                           res, dt, tarea)
-            elseif(timemode .eq. 3)then
+            elseif(timemode == 'gmres')then
                call gmres(elem, esue, edge, tedge, vedge, spts, &
                           coord, qc, qcd, qv, qvd, qx, qxd, qy, qyd, &
                           af, tarea, varea, dt, cl, cd, res, resd)
@@ -111,7 +111,7 @@
             call screen(qc, cl, cd)
          endif
 
-         if(timemode.eq.3)then
+         if(timemode == 'gmres')then
             !cfl = 1.0e20                ! for subsonic
             !if(iter.gt.20) cfl = 1.0e20 ! for transonic
             !cfl = max(1.0d0, 10.0d0/fres)

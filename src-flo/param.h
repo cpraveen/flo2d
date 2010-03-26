@@ -17,7 +17,8 @@
       common/files/gridfile,inpfile
 
       real(dp) :: CFL, MINRES, dtglobal, gerrtol
-      integer  :: iter, ITERLAST, MAXITER, saveinterval, timemode, &
+      character(len=24) :: timemode
+      integer  :: iter, ITERLAST, MAXITER, saveinterval, &
                   gmaxiter, prectype, scrinterval
       common/itparam/CFL,MINRES,dtglobal,gerrtol,iter,ITERLAST, &
                      MAXITER,saveinterval, timemode, gmaxiter, &
@@ -69,9 +70,8 @@
       integer  :: lsize
       common/maya/lsize
 
-      integer  :: iflux, iroe, ikfvs, ihllc
-      parameter(iroe=1, ikfvs=2, ihllc=3)
-      common/flux/iflux
+      character(len=24) :: flux_type
+      common/flux/flux_type
 
       integer  :: inviscid, laminar, turbulent
       parameter(inviscid=1, laminar=2, turbulent=3)

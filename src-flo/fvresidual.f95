@@ -25,9 +25,9 @@
       call average(spts, elem, edge, coord, tarea, af, qc, qv)
 
 !     Compute flux for interior edges
-      select case(iflux)
+      select case(flux_type)
 
-      case(ikfvs)
+      case('kfvs')
          do ie=nin1,nin2
             e1 = edge(1,ie)
             e2 = edge(2,ie)
@@ -40,7 +40,7 @@
                            res(1,c1), res(1,c2))
             enddo
 
-      case(iroe)
+      case('roe')
          do ie=nin1,nin2
             e1 = edge(1,ie)
             e2 = edge(2,ie)
@@ -54,7 +54,7 @@
          enddo
 
       case default
-         print*,'fvresidual: Unknown flux type ',iflux
+         print*,'fvresidual: Unknown flux type ',flux_type
          stop
 
       end select
@@ -77,7 +77,7 @@
       enddo
 
 !     Viscous terms
-      if(iflow .ne. inviscid)then
+      if(flow_type /= 'inviscid')then
          call gradient(elem, edge, spts, coord, varea, qc, qv, &
                        qx, qy)
          call viscflux(edge, tedge, coord, qv, qx, qy, res)

@@ -1,9 +1,9 @@
 ! laminar paramters
 ! Rey = Reynolds number
 ! SCONST = Constant in Sutherland Law
-      integer  :: iflow
+      character(len=24)  :: flow_type
       real(dp) :: Rey, prandtl, prandtl_turb, SCONST
-      common/viscparam/Rey, prandtl, prandtl_turb, SCONST, iflow
+      common/viscparam/Rey, prandtl, prandtl_turb, SCONST, flow_type
 
 ! Parameters in Spallart-Allmaras model
       real(dp) :: Cb1, Cb2, sigma_sa, kolm, Cw1, Cw2, Cw3, Cv1,  &

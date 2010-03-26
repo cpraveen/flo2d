@@ -28,7 +28,7 @@
          enddo
       enddo
 
-      if(iflow .ne. inviscid)then
+      if(flow_type /= 'inviscid')then
 !        Viscous flow: zero velocity condition
          do i=1,nsp
             j = spts(i)
