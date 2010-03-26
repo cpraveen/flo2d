@@ -46,10 +46,10 @@
       write(*,9)('-',i=1,70)
 9     format(70a)
       write(*,10)mach_inf,aoa_deg,Rey,CFL
-10    format(' Mach =',f6.3,', AOA =',f6.2, ', Rey = ',e10.4, &
-             ', CFL = ',e10.4)
+10    format(' Mach =',f6.3,'    AOA =',f6.2, '  Rey = ',e10.4, &
+             '   CFL = ',e10.4)
       write(*,11)flux_type,ilimit,gridfile
-11    format(' Flux = ',a6, ',     Lim = ',i2,',    Grid= ',a30)
+11    format(' Flux = ',a7, '  Lim = ',i2,'     Grid= ',a30)
       write(*,9)('-',i=1,70)
       write(*,'(" Iterations        =",i12)')iter
       write(*,'(" Global dt         =",e16.6)') dtglobal
