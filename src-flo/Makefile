@@ -55,8 +55,6 @@ fvm   =   geometric.o \
           smooth.o \
           gradient.o \
           visc.o \
-          viscres.o \
-          viscres_adiabatic.o \
           sutherland.o \
           read_grid.o \
           pres_match.o
@@ -77,8 +75,6 @@ FVRESIDUAL_Q =  fvresidual.f95 \
 					 limit_preproc.f95 \
 					 solid_flux.f95 \
 					 visc.f95 \
-					 viscres.f95 \
-					 viscres_adiabatic.f95 \
 					 gradient.f95 \
 					 average.f95 \
 					 vaverage.f95 \
