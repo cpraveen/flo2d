@@ -73,9 +73,9 @@
       prim_inf(4) = p_inf
 
 !     Print some useful info
-      if(iflow.eq.inviscid) print*,'Euler computation'
-      if(iflow.eq.laminar)  print*,'Laminar Navier-Stokes computation'
-      if(iflow.eq.turbulent)print*,'Turbulent Navier-Stokes computation'
+      if(flow_type == 'inviscid') print*,'Euler computation'
+      if(flow_type == 'laminar')  print*,'Laminar Navier-Stokes computation'
+      if(flow_type == 'rans')print*,'Turbulent Navier-Stokes computation'
       print*,'Free-stream values:'
       write(*,'(5x, " Mach number =", f8.4)')mach_inf
       write(*,'(5x, " AOA         =", f8.4)')aoa_deg
@@ -98,7 +98,7 @@
       birk(3) = 2.0d0/3.0d0
 
 !     For implicit scheme, set to single stage RK
-      if(timemode .ne. 1) NIRK = 1
+      if(timemode /= 'rk3') NIRK = 1
 
       cl = 0.0d0
       cd = 0.0d0
@@ -168,7 +168,7 @@
       external :: sutherland
 
       dtglobal = 1.0d20
-      if(iflow .ne. inviscid)then
+      if(flow_type /= 'inviscid')then
          do i=1,nt
             d        = q(1,i)
             u        = q(2,i)
@@ -268,7 +268,7 @@
       enddo
 
       ! TESTING ONLYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
-      if(timemode .eq. 3)then
+      if(timemode =='gmres')then
          do i=1,nt
             dt(i)    = dtglobal
          enddo

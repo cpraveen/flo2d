@@ -43,9 +43,7 @@
 !     call smooth(ptype, psup1, psup2, elem, esup1, esup2, coord)
 
 !     Renumber triangles
-      if(timemode .ne. 1)then
-         call renumber(elem, esue, tedge)
-      endif
+      call renumber(elem, esue, tedge)
 
 !     Calculate triangle areas
       call tri_area(coord, elem, tarea, varea)

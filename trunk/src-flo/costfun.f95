@@ -6,6 +6,7 @@
                          cl, cd, cost)
       implicit none
       include 'param.h'
+      include 'adj.h'
       integer  :: elem(3,*), edge(2,*), tedge(2,*), vedge(2,*),  &
                   spts(*)
       real(dp) :: coord(2,*), qc(nvar,*), af(3,*), qv(nvar,*),  &
@@ -26,6 +27,10 @@
 
       call clcd(edge, tedge, coord, qc, cl, cd)
 
-      cost = cl
+      if(costtyp == 'CL')then
+         cost = cl
+      else if(costtyp == 'CD')then
+         cost = cd
+      endif
 
       end

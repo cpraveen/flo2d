@@ -24,7 +24,7 @@
 
 
 !     Variables for gmres, see gmres.h
-      if(timemode .eq. 3)then
+      if(timemode == 'gmres')then
          ! Sizes of these arrays not clear, following seems to work
          allocate( a_jlu (2*4*nvar*nvar*nt) )
          allocate( a_alu (2*4*nvar*nvar*nt) )

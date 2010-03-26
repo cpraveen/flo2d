@@ -165,7 +165,7 @@
       write(maya,10)
 10    format('# vtk DataFile Version 3.0')
 
-      if(iflow .eq. inviscid)then
+      if(flow_type /= 'inviscid')then
       write(maya,111) mach_inf, aoa_deg
 111   format('Mach =', f6.3, 2x, ' AOA = ', f6.3)
       else

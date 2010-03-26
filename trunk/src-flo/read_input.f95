@@ -6,7 +6,6 @@
       include 'param.h'
       integer :: inp, iargc, n, inpstatus
       character sdummy*32
-      character*24 flux_type
 
       n = iargc()
       if(n .eq. 0)then
@@ -20,7 +19,7 @@
       open(unit=inp, file=inpfile, status='old')
       print*,'Reading parameters from ',inpfile
       read(inp,*)sdummy, istart
-      read(inp,*)sdummy, iflow
+      read(inp,*)sdummy, flow_type
       read(inp,*)sdummy, mach_inf
       read(inp,*)sdummy, aoa_deg
       read(inp,*)sdummy, Rey
@@ -48,16 +47,21 @@
          inpstatus = no
       endif
 
-      if(iflow .ne. inviscid .and. iflow .ne. laminar .and. &
-         iflow .ne. turbulent)then
-         print*,'Unknown flow type',iflow
-         print*,'Possible values: 1=inviscid, 2=laminar, 3=turbulent'
+      if(flow_type /= 'inviscid' .and. flow_type /= 'laminar' .and. &
+         flow_type /= 'rans')then
+         print*,'Unknown flow type',flow_type
+         print*,'Possible values: inviscid, laminar, rans'
          inpstatus = no
       endif
 
-      if(flux_type == 'roe')  iflux = iroe
-      if(flux_type == 'kfvs') iflux = ikfvs
-      if(iflux .ne. iroe .and. iflux .ne. ikfvs)then
+      if(timemode /= 'rk3' .and. timemode /= 'lusgs' .and. &
+         timemode /= 'gmres')then
+         print*,'Unknown time integration scheme ', timemode
+         print*,'Possible values: rk3, lusgs, gmres'
+         inpstatus = no
+      endif
+
+      if(flux_type /= 'roe' .and. flux_type == 'kfvs')then
          print*,'Unknown flux ', flux_type
          print*,'Possible values: roe, kfvs'
          inpstatus = no

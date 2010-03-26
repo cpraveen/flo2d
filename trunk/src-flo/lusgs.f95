@@ -49,7 +49,7 @@
          D(t1) = D(t1) + lam
          D(t2) = D(t2) + lam
 
-         if(iflow .ne. inviscid)then
+         if(flow_type /= 'inviscid')then
             mul1 = sutherland(qc(1,t1))
             mul2 = sutherland(qc(1,t2))
             mul  = 0.5d0*(mul1 + mul2)
@@ -77,7 +77,7 @@
          lam = 0.5d0*omega*lam
          D(t1) = D(t1) + lam
 
-         if(iflow .ne. inviscid)then
+         if(flow_type /= 'inviscid')then
             mul  = sutherland(qc(1,t1))
             lv   = (GAMMA/r)*(mul/prandtl)*ds1**2
             D(t1)= D(t1) + lv/tarea(t1)
@@ -115,7 +115,7 @@
             call normalflux(sx1, sy1, qc(1,t1), flux2)
             call maxeig(sx1, sy1, ds1, qcold(1,t1), lam1)
             lam1 = omega*lam1
-            if(iflow .ne. inviscid)then
+            if(flow_type /= 'inviscid')then
                call visceig(it, t1, coord, elem, qcold, ds1, lam1)
             endif
             do iv=1,nvar
@@ -129,7 +129,7 @@
             call normalflux(sx2, sy2, qc(1,t2), flux2)
             call maxeig(sx2, sy2, ds2, qcold(1,t2), lam2)
             lam2 = omega*lam2
-            if(iflow .ne. inviscid)then
+            if(flow_type /= 'inviscid')then
                call visceig(it, t2, coord, elem, qcold, ds2, lam2)
             endif
             do iv=1,nvar
@@ -143,7 +143,7 @@
             call normalflux(sx3, sy3, qc(1,t3), flux2)
             call maxeig(sx3, sy3, ds3, qcold(1,t3), lam3)
             lam3 = omega*lam3
-            if(iflow .ne. inviscid)then
+            if(flow_type /= 'inviscid')then
                call visceig(it, t3, coord, elem, qcold, ds3, lam3)
             endif
             do iv=1,nvar
@@ -192,7 +192,7 @@
             call normalflux(sx1, sy1, qc(1,t1), flux2)
             call maxeig(sx1, sy1, ds1, qcold(1,t1), lam1)
             lam1 = omega*lam1
-            if(iflow .ne. inviscid)then
+            if(flow_type /= 'inviscid')then
                call visceig(it, t1, coord, elem, qcold, ds1, lam1)
             endif
             do iv=1,nvar
@@ -206,7 +206,7 @@
             call normalflux(sx2, sy2, qc(1,t2), flux2)
             call maxeig(sx2, sy2, ds2, qcold(1,t2), lam2)
             lam2 = omega*lam2
-            if(iflow .ne. inviscid)then
+            if(flow_type /= 'inviscid')then
                call visceig(it, t2, coord, elem, qcold, ds2, lam2)
             endif
             do iv=1,nvar
@@ -220,7 +220,7 @@
             call normalflux(sx3, sy3, qc(1,t3), flux2)
             call maxeig(sx3, sy3, ds3, qcold(1,t3), lam3)
             lam3 = omega*lam3
-            if(iflow .ne. inviscid)then
+            if(flow_type /= 'inviscid')then
                call visceig(it, t3, coord, elem, qcold, ds3, lam3)
             endif
             do iv=1,nvar
