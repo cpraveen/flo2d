@@ -5,6 +5,7 @@
       implicit none
       include 'param.h'
       include 'gmres.h'
+      integer, parameter :: mode = 1
       integer, allocatable, dimension(:)   :: ptype
       integer, allocatable, dimension(:,:) :: elem, esue, edge, tedge, &
                                               vedge

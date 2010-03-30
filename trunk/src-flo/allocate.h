@@ -6,21 +6,24 @@
       allocate( ptype(np) )
       allocate( coord(2,np) )
       allocate( qc(nvar,nt) )
-      allocate( qcd(nvar,nt) )
-      allocate( qcold(nvar,nt) )
       allocate( dt(nt) )
       allocate( af(3,np) )
       allocate( qv(nvar,np) )
-      allocate( qvd(nvar,np) )
       allocate( tarea(nt) )
       allocate( varea(np) )
       allocate( drmin(nt) )
       allocate( res(nvar,nt) )
-      allocate( resd(nvar,nt) )
       allocate( qx(3,np) )
       allocate( qy(3,np) )
-      allocate( qxd(3,np) )
-      allocate( qyd(3,np) )
+
+      if(mode == 1)then
+         allocate( qcold(nvar,nt) )
+         allocate( qcd(nvar,nt) )
+         allocate( qvd(nvar,np) )
+         allocate( resd(nvar,nt) )
+         allocate( qxd(3,np) )
+         allocate( qyd(3,np) )
+      endif
 
 
 !     Variables for gmres, see gmres.h

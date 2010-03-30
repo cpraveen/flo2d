@@ -31,6 +31,9 @@
          cost = cl
       else if(costtyp == 'CD')then
          cost = cd
+      else
+         print*,'costfun: Error, unknown cost function =', costtyp
+         stop
       endif
 
       end
