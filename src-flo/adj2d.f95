@@ -36,10 +36,6 @@
 !     Read input parameters from file, also sets np, nt
       call read_input
 
-      ! TEMPORARY STUFF
-      timemode= 'rk3'
-      nirk    = 3
-
 !     Allocate memory for variables
       include 'allocate.h'
       include 'allocadj.h'
@@ -85,38 +81,47 @@
 
             ! Compute finite volume residual
             ! Use conb as temp variable. On output, conb=0
-            qcb = 0.0d0
+            !qcb = 0.0d0
             conb = resb
-            qvb  = 0.0d0
-            qxb  = 0.0d0
-            qyb  = 0.0d0
+            !qvb  = 0.0d0
+            !qxb  = 0.0d0
+            !qyb  = 0.0d0
             call fvresidual_bq(elem, edge, tedge, vedge, spts, &
                             coord, qc, qcb, qv, qvb, qx, qxb, qy, qyb, &
                             af, tarea, varea, cl, cd, res, conb)
 
+            ! Convert (dR/dv)^T * psi to (dR/du)^T * psi
+            ! and add dJdu to form adjoint residual
+            do i=1,nt
+               call con2prim_bq(con(1,i), conb(1,i), qc(1,i), qcb(1,i))
+               conb(:,i) = conb(:,i) + dJdu(:,i)
+            enddo
+
 !           Update the solution
             if(timemode == 'rk3')then
                do i=1,nt
-                  call con2prim_bq(con(1,i), conb(1,i), qc(1,i), qcb(1,i))
-                  conb(:,i) = conb(:,i) + dJdu(:,i)
                   do j=1,nvar
                      resb(j,i) = airk(irk)*resbold(j,i) + &
                                  birk(irk)*(resb(j,i) - &
                                  dt(i)*conb(j,i)/tarea(i))
                   enddo
                enddo
+            else if(timemode == 'gmres')then
+               call agmres(elem, esue, edge, tedge, vedge, spts, &
+                           coord, qc, qcb, qv, qvb, qx, qxb, qy, qyb, &
+                           af, tarea, varea, dt, cl, cd, conb, resb)
+               resb = resbold + resb
             else
-               print*,'adj2d: Time integration scheme not done'
-               stop
+               stop "adj2d: Unknown time integration scheme"
             endif
 
          enddo
 
          iter = iter + 1
          call residue(conb)
-         write(*,'(i6,4e16.6)') iter, fres, fresi, cl, cd
+         write(*,'(i6,3e16.6)') iter, fres, fresi, cfl
          open(unit=99, file='ADJ.RES', access='append')
-         write(99,'(i6,4e16.6)') iter, fres, fresi, cl, cd
+         write(99,'(i6,3e16.6)') iter, fres, fresi, cfl
          close(99)
 
          if(mod(iter,saveinterval) == 0)then
@@ -124,6 +129,11 @@
             call write_vtk(coord, elem, qv)
          endif
 
+         if(timemode == 'gmres')then
+            !cfl = 1.2d0*cfl*fres_old/fres
+            cfl = max(cfl, 1.2d0*cfl*fres_old/fres)
+            call time_step2(edge, tedge, tarea, coord, qc, dt)
+         endif
       enddo
 
       totaltime = etime(elapsed)
@@ -132,6 +142,10 @@
       elapsed(2)= elapsed(1)/60.0
       print *, 'Time: total=', totaltime, ' user=', elapsed(1), &
                ' system=', elapsed(2)
+
+      ! Save final adjoint solution for visualization
+      call average(spts, elem, edge, coord, tarea, af, resb, qv)
+      call write_vtk(coord, elem, qv)
 
       stop
       end
