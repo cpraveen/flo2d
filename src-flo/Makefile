@@ -88,12 +88,21 @@ COSTFUN_Q = costfun.f95 \
 
 adj = adj2d.o \
 		sutherland.o \
+		common.o \
+		geometric.o \
 		limit.o \
 		gradient.o \
 		average.o \
+		avgfact1.o \
+		avgfact2.o \
+		clcd.o \
+		read_grid.o \
+		read_input.o \
 		vaverage.o \
+		write_vtk.o \
       fvresidual_bq.o \
       costfun_bq.o \
+      con2prim_bq.o \
 		clcd_bq.o \
       adStack.o \
       adBuffer.o
@@ -174,6 +183,14 @@ costfun_bq.f95: $(COSTFUN_Q) $(HDR)
 		-vars    "qc qv qx qy cost" \
 		-outvars "qc qv qx qy cost" \
 		$(COSTFUN_Q)
+##############################################################################
+con2prim_bq.o: con2prim.f95 $(HDR)
+	$(TPNBQ) \
+		-head    con2prim  \
+		-vars    "con"     \
+		-outvars "prim"    \
+		con2prim.f95
+	${FC} -c ${FFLAGS} $*.f95
 ##############################################################################
 dPackgmres.o: ../gmres/dPackgmres.f 
 	${FC} -c -O3 $<
