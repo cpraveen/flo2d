@@ -87,23 +87,28 @@ COSTFUN_Q = costfun.f95 \
 				gradient.f95 \
 
 adj = adj2d.o \
-		sutherland.o \
-		common.o \
-		geometric.o \
-		limit.o \
-		gradient.o \
-		average.o \
-		avgfact1.o \
-		avgfact2.o \
-		clcd.o \
-		read_grid.o \
-		read_input.o \
-		vaverage.o \
-		write_vtk.o \
+      sutherland.o \
+      common.o \
+      geometric.o \
+      limit.o \
+      gradient.o \
+      average.o \
+      avgfact1.o \
+      avgfact2.o \
+      clcd.o \
+      read_grid.o \
+      read_input.o \
+      vaverage.o \
+      write_vtk.o \
+      agmres.o \
+      jacobian.o \
+      flux_jacob.o \
+      sparsekit.o \
+      dPackgmres.o \
       fvresidual_bq.o \
       costfun_bq.o \
       con2prim_bq.o \
-		clcd_bq.o \
+      clcd_bq.o \
       adStack.o \
       adBuffer.o
 
