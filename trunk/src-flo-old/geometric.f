@@ -563,6 +563,8 @@ c Order is important
       write(*,'(2x, "Number of farfield edges =", i8)')nff
       write(*,'(2x, "Total no of edges        =", i8)')ne
 
+      nbe = nsw + nff
+
       return
       end
 
@@ -810,19 +812,19 @@ C-----------------------------------------------------------------------------
          t2 = esue(2,it)
          t3 = esue(3,it)
 
-         if(newnum(t1) .eq. 0 .and. t1 .gt. 0)then
+         if(t1 .gt. 0 .and. newnum(t1) .eq. 0)then
             tcount         = tcount + 1
             oldnum(tcount) = t1
             newnum(t1)     = tcount
          endif
 
-         if(newnum(t2) .eq. 0 .and. t2 .gt. 0)then
+         if(t2 .gt. 0 .and. newnum(t2) .eq. 0)then
             tcount         = tcount + 1
             oldnum(tcount) = t2
             newnum(t2)     = tcount
          endif
 
-         if(newnum(t3) .eq. 0 .and. t3 .gt. 0)then
+         if(t3 .gt. 0 .and. newnum(t3) .eq. 0)then
             tcount         = tcount + 1
             oldnum(tcount) = t3
             newnum(t3)     = tcount
