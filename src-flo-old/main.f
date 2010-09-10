@@ -24,6 +24,28 @@ C------------------------------------------------------------------------------
       call geometric(elem, edge, tedge, esue, vedge, spts, ptype,
      +               bdedge, esubp, coord, drmin, tarea, af)
 
+c     Write out new grid
+      open(20, file="grid.fm")
+      write(20,*) np, nt, nbe
+      do i=1,np
+         write(20,'(i8,2e24.15)') i, coord(:,i)
+      enddo
+      do i=1,nt
+         write(20,*) i, elem(:,i)
+      enddo
+      j = 0
+      do i=nsw1,nsw2
+         j = j+1
+         write(20,*) j, edge(1,i), edge(2,i), solid
+      enddo
+      do i=nff1,nff2
+         j = j+1
+         write(20,*) j, edge(1,i), edge(2,i), farfield
+      enddo
+      close(20)
+
+c     stop
+
 C Set initial condition
       call initialize(qc, cl, cd)
 
