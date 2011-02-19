@@ -1,0 +1,29 @@
+Grid file format
+
+<No of points>   <No of triangles>   <No of boundary edges>
+1    x1    y1
+.    .     .
+.    .     .
+.    .     .
+.    .     .
+1    a1    b1   c1
+.    .     .    .
+.    .     .    .
+.    .     .    .
+.    .     .    .
+.    .     .    .
+1    a1    b1   typ1
+.    .     .    .
+.    .     .    .
+.    .     .    .
+
+Node numbering starts from one (fortran style)
+
+In each triangle, the nodes (a1,b1,c1) are ordered counter-clockwise.
+
+For each boundary edge, when you move from node a1 to node b1, the computational domain lies to your left.
+
+Boundary edge types:
+
+Solid wall = 3
+farfield   = 5
