@@ -1,0 +1,27 @@
+Start     1
+FlowType  inviscid
+Mach      0.63
+AOA       2.00
+Reynolds  5000.0
+CFL       10.0
+Timemode  gmres
+GMRES     20 1 0.1
+LastIter  0
+MaxIter   500
+MinRes    1.0e-10
+SaveInt   10000000
+ScrInt    1
+NoIso     30
+Flux      roe
+Limiter   0
+FarBC     0  0.0  0.0
+Display   1
+GridFile  "converted/grids/naca.4738"
+GridFile  "converted/grids/naca.1398"
+
+GridFile  "../../grd/naca.1398"
+GridFile  "../../grd/naca.4738"
+GridFile  "../../grd/naca3.struct"
+GridFile  "/home/praveen/fvm/heat/run/naca2415.4420.tri"
+GridFile  "../../grd/rae.7883"
+GridFile  "../../grd-visc/naca-207x49.dat"
