@@ -20,10 +20,12 @@
       write(*, '( " Number of triangles      :", i8)') nt
       write(*, '( " Number of boundary edges :", i8)') nbe
 
+!     Read point coordinates
       do ip=1,np
          read(ngrid,*) i, coord(1,ip), coord(2,ip)
       enddo
 
+!     Read triangles
       do ip=1,nt
          read(ngrid,*) i, elem(1, ip), elem(2, ip), elem(3, ip)
       enddo
