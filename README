@@ -1,3 +1,9 @@
+The flo solver requires GMRES library. Get double precision version from here
+
+http://www.cerfacs.fr/algor/Softs/GMRES/
+
+Put the file dPackgmres.f in directory flo2d/gmres
+-------------------------------------------------------------------------------
 Grid file format
 
 <No of points>   <No of triangles>   <No of boundary edges>

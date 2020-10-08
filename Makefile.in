@@ -1,10 +1,11 @@
 #This requires a fairly recent version of make, preferably GNU's make.
 
 #Fortran compiler
-F77=ifort -diag_disable vec
+#F77=ifort -diag_disable vec
+F77=gfortran
 
 #Set your compiler optimization flags in this
-CFLAGS=-O3
+CFLAGS=-O3 -Wall
 
 # Location of tapenade executable
 # TAPENADE_HOME must be defined, probably in your bashrc
@@ -23,7 +24,7 @@ LIBS     = ${LIBGMRES} ${LIBBLAS}
 ###############################################################################
 #Some more tapenade related stuff
 TPDIR   = ../tapenade
-GenLib  = ${TPDIR}/MyGeneralLib
+GenLib  = ${TPDIR}/GeneralLib
 ADLib   = ${TPDIR}/MyADLib
 
 #

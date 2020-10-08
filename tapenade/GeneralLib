@@ -1,0 +1,10 @@
+function derf:
+  intrinsic:
+  shape: (param 1, result)
+  type: (modifiedType(modifiers(ident double), float()),
+    modifiedType(modifiers(ident double), float()))
+  derivative : binary(call(none(), ident derf, expressions(metavar X)),
+             none(),
+             expressions(binary(metavar X, none(),
+             mul(realCst 1.12837916709551257390d0, 
+             call(none(), ident dexp, expressions(minus(power(metavar X, intCst 2))))))))
