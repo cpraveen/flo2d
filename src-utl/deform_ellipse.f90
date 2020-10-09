@@ -19,7 +19,7 @@
       allocate( coord(2,np) )
       allocate( elem(3,nt) )
 
-c     Number of points on first,second,third ellipese, and on outer
+!     Number of points on first,second,third ellipese, and on outer
       n1   = 200
       n2   = 400
       n3   = 200
@@ -27,7 +27,7 @@ c     Number of points on first,second,third ellipese, and on outer
 
       PI = 4.0d0*datan(1.0d0)
 
-c     Semi-major/minor axes of first and third ellipse
+!     Semi-major/minor axes of first and third ellipse
       l1 = 2.0d0
       h1 = 0.5d0
       l3 = 3.5d0
@@ -42,7 +42,7 @@ c     Semi-major/minor axes of first and third ellipse
       out_nbeg = el3_nend + 1
       out_nend = out_nbeg + nout - 1
 
-c     Read design variables
+!     Read design variables
       open(10, file="control.dat", status="old")
       read(10,*) x1, y1, alpha1, x3, y3, alpha3
       close(10)
@@ -55,16 +55,16 @@ c     Read design variables
 
       call read_grid(coord, elem, betype, bdedge)
 
-c     Total number of moving/fixed points
+!     Total number of moving/fixed points
       nwp = n1 + n2 + n3 + nout
       allocate( rw(2,nwp) )
       allocate(drw(2,nwp) )
       allocate( wt(2,nwp+3) )
 
-c     Counter
+!     Counter
       c = 0
 
-c     First ellipse
+!     First ellipse
       theta = 0.0d0
       dtheta= 2.0d0*PI/n1
       do i=el1_nbeg,el1_nend
@@ -78,14 +78,14 @@ c     First ellipse
          drw(2,c) = y - coord(2,i)
       enddo
 
-c     Second ellipse
+!     Second ellipse
       do i=el2_nbeg,el2_nend
          c     = c + 1
          drw(1,c) = 0.0d0
          drw(2,c) = 0.0d0
       enddo
 
-c     Third ellipse
+!     Third ellipse
       theta = 0.0d0
       dtheta= 2.0d0*PI/n3
       do i=el3_nbeg,el3_nend
@@ -99,7 +99,7 @@ c     Third ellipse
          drw(2,c) = y - coord(2,i)
       enddo
 
-c     Outer boundary
+!     Outer boundary
       do i=out_nbeg,out_nend
          c        = c + 1
          drw(1,c) = 0.0d0
@@ -113,31 +113,31 @@ c     Outer boundary
       enddo
       print*,'Maximum movement =',drmax
 
-c     Copy boundary points from coord into rw
+!     Copy boundary points from coord into rw
       call set_bdpts(coord, nwp, rw)
 
-c     Train rbf
+!     Train rbf
       call rbf_train(nwp, rw, drw, wt)
 
       call divergence(np, coord, nwp, rw, wt, nstep)
       print*,'Number of steps =',nstep
 
-c     Break deformation into smaller steps
+!     Break deformation into smaller steps
       drw = drw/nstep
 
       do i=1,nstep
 
          call set_bdpts(coord, nwp, rw)
 
-c        Train rbf
+!        Train rbf
          call rbf_train(nwp, rw, drw, wt)
 
-c        RBF deformation
+!        RBF deformation
          call rbf_eval(np, coord, nwp, rw, wt)
 
       enddo
 
-c     Write out new grid
+!     Write out new grid
       print*,'Overwriting grid file grid.fm'
       open(20, file="grid.fm")
       write(20,*) np, nt, nbe
