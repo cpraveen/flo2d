@@ -3,6 +3,27 @@ The flo solver requires GMRES library. Get double precision version from here
 http://www.cerfacs.fr/algor/Softs/GMRES/
 
 Put the file dPackgmres.f in directory flo2d/gmres
+
+You also need Tapenade to compile the code. Get it from here
+
+http://www-sop.inria.fr/tropics/tapenade/downloading.html
+
+Set the variable TAPENADE_HOME to point to your Tapenade installation.
+
+Compile the flo solver
+
+cd src-flo
+make flo2d
+
+Compile the adjoint solver
+
+cd src-flo
+make adj2d
+
+Compile deformation code
+
+cd src-utl
+make
 -------------------------------------------------------------------------------
 Grid file format
 

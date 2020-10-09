@@ -3,7 +3,7 @@ include ../Makefile.in
 #
 # fortran flags
 #
-FFLAGS   = ${CFLAGS} -free -Tf
+FFLAGS   = ${CFLAGS}
 
 #Location of forward differentiated code
 SRCDIFF = .src-diff
