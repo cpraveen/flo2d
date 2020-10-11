@@ -85,6 +85,7 @@
          call system('gnuplot flo.gnu')
          if(display.eq.1) call system('xv -poll flo.png &')
          if(display.eq.2) call system('display -update 10 flo.png &')
+         if(display.eq.3) call system('open -n flo.png &')
          xvstatus = yes
       else
          call system('gnuplot flo.gnu &')

@@ -54,3 +54,27 @@ Boundary edge types:
 
 Solid wall = 3
 farfield   = 5
+-------------------------------------------------------------------------------
+Running the code
+
+Setup flo.in file with all parameters.
+Copy flo.gnu to the directory where you want to run the code.
+Run the flo2d
+
+$ /path/to/flo2d flo.in
+-------------------------------------------------------------------------------
+Post processing
+
+View domain and grid
+
+$ gnuplot grid.gnu
+
+The file flo.png is updated with some result as the code is running.
+
+gnuplot> set size ratio -1
+gnuplot> p 'FLO.P' w l,'BD.DAT' w l
+gnuplot> p 'FLO.M' w l,'BD.DAT' w l
+
+View FLO.vtk in mayavi/visit/paraview.
+
+There is a mayavi python script: plot_mayavi.py
