@@ -13,7 +13,7 @@
                   deltat, xx0, yy0, xx1, yy1, q2, mach, cp, ent, &
                   r, u, v, p
  
-      call vigie(coord, elem, qv)
+!     call vigie(coord, elem, qv)
       call mayavi(coord, elem, qv)
       call save_flow(qc)
 
@@ -85,7 +85,7 @@
          call system('gnuplot flo.gnu')
          if(display.eq.1) call system('xv -poll flo.png &')
          if(display.eq.2) call system('display -update 10 flo.png &')
-         if(display.eq.3) call system('open -n flo.png &')
+         if(display.eq.3) call system('open flo.svg &')
          xvstatus = yes
       else
          call system('gnuplot flo.gnu &')
