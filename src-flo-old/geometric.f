@@ -108,10 +108,12 @@ C-----------------------------------------------------------------------------
       do ip=1,np
          read(ngrid,*) i, coord(1,ip), coord(2,ip), ptype(ip)
       enddo
+      print*,'Finished reading point coordinates'
 
       do ip=1,nt
          read(ngrid,*) i, elem(1, ip), elem(2, ip), elem(3, ip), j
       enddo
+      print*,'Finished reading elements'
 
       close(ngrid)
 
