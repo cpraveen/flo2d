@@ -1,0 +1,32 @@
+-------------------------------------------------------------------------------
+TA2 test case: laminar flow past 3 ellipses
+-------------------------------------------------------------------------------
+Run reference case
+
+Copy grid file (this grid corresponds to center of design space, not target)
+
+cp grid.0 grid.fm
+
+Run flo2d
+
+flo2d flo.inp > flo.log 2>&1 &
+
+See domain and grid
+
+gnuplot> set size ratio -1
+gnuplot> p 'BD.DAT' w l
+gnuplot> p 'GRID.DAT' w l
+
+Monitor some solution evolution by viewing flo.svg file.
+-------------------------------------------------------------------------------
+Change ellipse shape and run solver
+
+Set ellipse position in control.dat to target values or some other desired value
+
+Copy grid file
+
+cp grid.0 grid.fm
+
+Run deform_ellipse, this overwrites grid.fm
+
+Run flo2d
