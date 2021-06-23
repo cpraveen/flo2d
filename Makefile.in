@@ -1,9 +1,16 @@
-#This requires a fairly recent version of make, preferably GNU's make.
+# This requires a fairly recent version of make, preferably GNU's make.
 
-#Fortran compiler
-F77=ifort -diag_disable vec
+# Fortran compiler
+# F77=ifort -diag_disable vec
+F77=gfortran
 
-#Set your compiler optimization flags in this
+# fortran flags
+FC     = ${F77}
+CC     = cc
+GCC    = cc
+RM     = /bin/rm
+
+# Set your compiler optimization flags in this
 CFLAGS=-O3
 
 # Location of tapenade executable
@@ -11,27 +18,20 @@ CFLAGS=-O3
 # Else define it first
 #TAPENADE_HOME=
 
-#To use or not: LIMITED or UNLIMITED
+# To use or not: LIMITED or UNLIMITED
 TOLIMIT = UNLIMITED
 
-#Libraries for gmres, linpack and blas
+# Libraries for gmres, linpack and blas
 LIBBLAS  = -lblas
 LIBS     = ${LIBGMRES} ${LIBBLAS}
 
 ###############################################################################
-#Don't change anything below unless you really know what you are doing
+# Don't change anything below unless you really know what you are doing
 ###############################################################################
 #Some more tapenade related stuff
 TPDIR   = ../tapenade
-GenLib  = ${TPDIR}/MyGeneralLib
+GenLib  = ${TPDIR}/GeneralLib
 ADLib   = ${TPDIR}/MyADLib
-
-#
-# fortran flags
-#
-FC     = ${F77}
-GCC    = gcc
-RM     = /bin/rm
 
 #Location of flow solver files
 SRCFLO = ../src-flo

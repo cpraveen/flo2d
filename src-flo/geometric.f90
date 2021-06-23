@@ -52,7 +52,7 @@
       call dtlength(coord, tarea, elem, drmin)
 
 !     Write grid in gnuplot format for visualization
-      call write_grid(coord, edge, tedge)
+      call write_grid(coord, edge, bdedge)
 
 !     Generate .gnu files for visualization
       call prep_gnuplot
@@ -721,25 +721,32 @@
 !-----------------------------------------------------------------------------
 ! Write grid into a file for visualization with gnuplot
 !-----------------------------------------------------------------------------
-      subroutine write_grid(coord, edge, tedge)
+      subroutine write_grid(coord, edge, bdedge)
       implicit none
       include 'param.h'
       real(dp) :: coord(2,*)
-      integer  :: edge(2,*), tedge(2,*)
+      integer  :: edge(2,*), bdedge(2,*)
 
       integer  :: gfile, i, n1, n2
 
 !     Write boundary edges to BD.DAT
       open(unit=10, file='BD.DAT')
-      do i=1,ne
-      n1 = edge(1,i)
-      n2 = edge(2,i)
-      if( tedge(1,i)*tedge(2,i) .le. 0)then
+      do i=1,nbe
+         n1 = bdedge(1,i)
+         n2 = bdedge(2,i)
          write(10,*)coord(1,n1), coord(2,n1)
          write(10,*)coord(1,n2), coord(2,n2)
          write(10,*)
-      endif
       enddo
+!     do i=1,ne
+!     n1 = edge(1,i)
+!     n2 = edge(2,i)
+!     if( tedge(1,i)*tedge(2,i) .le. 0)then
+!        write(10,*)coord(1,n1), coord(2,n1)
+!        write(10,*)coord(1,n2), coord(2,n2)
+!        write(10,*)
+!     endif
+!     enddo
       close(10)
 
 !     Write grid into file GRID.DAT

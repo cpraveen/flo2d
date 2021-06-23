@@ -69,6 +69,11 @@ impl  =   fvresidual_q.o \
 			 dPackgmres.o \
           test_resd.o
 
+convert_grid = convert_grid.o \
+					geometric.o \
+					average.o avgfact1.o avgfact2.o \
+               vaverage.o
+
 gmres =   gmres.o
 
 flo   =   ${fvm} ${impl} ${gmres}
@@ -82,6 +87,9 @@ flo:  ${flo}
 		${FC} -o flo ${flo} ${LIBS}
 		@${RM} -f *.msg *~
 		@$(PRINT) "==> Built $(GREEN)${TOLIMIT}$(BLACK) version of flo"
+
+convert_grid: ${convert_grid}
+		${FC} -o convert_grid ${convert_grid}
 
 #This is to prevent these files from being automatically deleted by make
 .SECONDARY: ${SRCDIFF}/kfvs_flux_dq.f ${SRCDIFF}/roe_flux_dq.f

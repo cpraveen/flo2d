@@ -1,3 +1,30 @@
+The flo solver requires GMRES library. Get double precision version from here
+
+http://www.cerfacs.fr/algor/Softs/GMRES/
+
+Put the file dPackgmres.f in directory flo2d/gmres
+
+You also need Tapenade to compile the code. Get it from here
+
+http://www-sop.inria.fr/tropics/tapenade/downloading.html
+
+Set the variable TAPENADE_HOME to point to your Tapenade installation.
+
+Compile the flo solver
+
+cd src-flo
+make flo2d
+
+Compile the adjoint solver
+
+cd src-flo
+make adj2d
+
+Compile deformation code
+
+cd src-utl
+make
+-------------------------------------------------------------------------------
 Grid file format
 
 <No of points>   <No of triangles>   <No of boundary edges>
@@ -27,3 +54,27 @@ Boundary edge types:
 
 Solid wall = 3
 farfield   = 5
+-------------------------------------------------------------------------------
+Running the code
+
+Setup flo.in file with all parameters.
+Copy flo.gnu to the directory where you want to run the code.
+Run the flo2d
+
+$ /path/to/flo2d flo.in
+-------------------------------------------------------------------------------
+Post processing
+
+View domain and grid
+
+$ gnuplot grid.gnu
+
+The file flo.png is updated with some result as the code is running.
+
+gnuplot> set size ratio -1
+gnuplot> p 'FLO.P' w l,'BD.DAT' w l
+gnuplot> p 'FLO.M' w l,'BD.DAT' w l
+
+View FLO.vtk in mayavi/visit/paraview.
+
+There is a mayavi python script: plot_mayavi.py
